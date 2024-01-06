@@ -11,7 +11,8 @@ class TubeTests {
 
     @Test
     void getNormal() {
-        assertEquals(new Vector(0,0,1),new Tube(2,new Ray(new Point(0,0,0),new Vector(1,0,0))).getNormal(new Point(0,0,2)),"the test didn't work");
-         assertEquals(new Vector(0,0,1),new Tube(2,new Ray(new Point(0,0,0),new Vector(1,0,0))).getNormal(new Point(2,0,2)),"the test didn't work");
+        Tube testTube = new Tube(2,new Ray(new Point(0,0,0),new Vector(1,0,0)));
+        assertEquals(new Vector(0,0,1),testTube.getNormal(new Point(0,0,2)),"Tube getNormal is not working");
+        assertEquals(new Vector(0,0,1),testTube.getNormal(new Point(2,0,2)),"Tube getNormal is not working");
     }
 }
