@@ -1,11 +1,13 @@
 package geometries;
-
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import primitives.Point;
 import primitives.Vector;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+/**
+ * Testing Polygons
+ * @author Dan
+ */
 
 public class PolygonTests {
     /**
@@ -84,18 +86,7 @@ public class PolygonTests {
 
 }
 
-//import static org.junit.jupiter.api.Assertions.*;
-//
-//        import org.junit.jupiter.api.Test;
-//
-//import geometries.Polygon;
-//import primitives.Point;
-//import primitives.Vector;
 
-/**
- * Testing Polygons
- * @author Dan
- */
-public class PolygonTests {
 
-}
+
+
