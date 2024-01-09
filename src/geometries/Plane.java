@@ -5,7 +5,10 @@
 package geometries;
 
 import primitives.Point;
+import primitives.Ray;
 import primitives.Vector;
+
+import java.util.List;
 
 /**
  * The Plane class represents a flat surface in three-dimensional space.
@@ -66,11 +69,16 @@ public class Plane implements Geometry {
      * there is no point in calculating the normal at the point.
      * We only created this function because it is a technical matter that must override it
      *
-     * @param p The point on the surface for which the normal vector is to be calculated.
+     * @param point The point on the surface for which the normal vector is to be calculated.
      * @return The normal vector at the specified point.
      */
     @Override
-    public Vector getNormal(Point p) {
+    public Vector getNormal(Point point) {
         return normal;
+    }
+
+    @Override
+    public List<Point> findIntersections(Ray ray) {
+        return null;
     }
 }

@@ -40,7 +40,12 @@ public class Point {
         return "point:" + super.toString();
     }
 
-    /** The method returns the point of this object plus the vector that the method received */
+    /**
+     *
+     * The method returns the point of this object plus the vector that the method received
+     * @param v
+     * @return
+     */
 
     public Point add(Vector v){
         return new Point(xyz.add(v.xyz));

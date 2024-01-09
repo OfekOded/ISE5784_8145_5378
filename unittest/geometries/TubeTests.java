@@ -19,7 +19,7 @@ class TubeTests {
      * Test case: Checking the normal vector at specific points on the surface of the tube.
      */
     @Test
-    void getNormal() {
+    void testGetNormal() {
         // Create a test tube with radius 2 and axis along the x-axis
         Tube testTube = new Tube(2, new Ray(new Point(0, 0, 0), new Vector(1, 0, 0)));
         // ============ Equivalence Partitions Tests ==============

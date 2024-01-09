@@ -23,7 +23,7 @@ class PlaneTest {
     }
 
     @Test
-    void constructor() {
+    void testConstructor() {
         // =============== Boundary Values Tests ==================
         //TC01: Attempting to create a plane with two points converge, expecting an IllegalArgumentException.
         assertThrows(IllegalArgumentException.class, () -> new Plane(new Point(1, 0, 0), new Point(1, 0, 0), new Point(0, 1, 0)),
@@ -31,5 +31,9 @@ class PlaneTest {
         //TC02: Attempting to create a plane with three points on the same line, expecting an IllegalArgumentException.
         assertThrows(IllegalArgumentException.class, () -> new Plane(new Point(1, 0, 0), new Point(2, 0, 0), new Point(3, 0, 0)),
                 "Failed to throw exception for three points on the same line");
+    }
+
+    @Test
+    void testFindIntersections() {
     }
 }

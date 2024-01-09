@@ -15,7 +15,7 @@ class PointTests {
      * Test case for the add method of the Point class.
      */
     @Test
-    void add() {
+    void testAdd() {
         // ============ Equivalence Partitions Tests ==============
         // TC01: Checks the integrity of add function
         assertEquals(new Point(2, 4, 6), new Point(1, 2, 3).add(new Vector(1, 2, 3)),
@@ -31,9 +31,10 @@ class PointTests {
      * Test case for the subtract method of the Point class.
      */
     @Test
-    void subtract() {
+    void testSubtract() {
         // ============ Equivalence Partitions Tests ==============
-        // TC01: Checks the integrity of subtract points
+        // TC01: Checks the
+        // integrity of subtract points
         assertEquals(new Vector(1, 2, 3), new Point(2, 4, 6).subtract(new Point(1, 2, 3)),
                      "ERROR: (point2 - point1) does not work correctly");
 
@@ -47,7 +48,7 @@ class PointTests {
      * Test case for the distanceSquared method of the Point class.
      */
     @Test
-    void distanceSquared() {
+    void testDistanceSquared() {
         // ============ Equivalence Partitions Tests ==============
         // TC01: Checks the squared distance between point a and b
         assertEquals(9, new Point(1, 2, 3).distanceSquared(new Point(2, 4, 5)),
@@ -67,9 +68,10 @@ class PointTests {
      * Test case for the distance method of the Point class.
      */
     @Test
-    void distance() {
+    void testDistance() {
         // ============ Equivalence Partitions Tests ==============
-        // TC01: Checks the distance between point a and b
+        // TC01: Checks the distance
+        // e between point a and b
         assertEquals(3, new Point(2, 4, 5).distance(new Point(1, 2, 3)),
                      "ERROR: distance between points to itself is wrong");
 

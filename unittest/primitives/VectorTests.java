@@ -190,7 +190,7 @@ class VectorTests {
      * Test case for the normalize method of the Vector class.
      */
     @Test
-    void normalize() {
+    void testNormalize() {
         // ============ Equivalence Partitions Tests ==============
         // TC01:Checks if the normal vector is a unit vector
         assertEquals(1, new Vector(1, 2, 3).normalize().length(), "ERROR: the normalized vector is not a unit vector");

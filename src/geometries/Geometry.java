@@ -11,7 +11,7 @@ import primitives.Point;
 /**
  * The Geometry interface represents a geometric shape in the application.
  */
-public interface Geometry {
+public interface Geometry extends Intersectable {
 
     /**
      * Calculates and returns the normal vector at the specified point on the surface of the geometry.

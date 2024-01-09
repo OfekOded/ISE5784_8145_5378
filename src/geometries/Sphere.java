@@ -5,7 +5,10 @@
 package geometries;
 
 import primitives.Point;
+import primitives.Ray;
 import primitives.Vector;
+
+import java.util.List;
 
 /**
  * The Sphere class represents a three-dimensional spherical geometry.
@@ -32,11 +35,16 @@ public class Sphere extends RadialGeometry {
     /**
      * Calculates and returns the normal vector at a specified point on the surface of the sphere.
      *
-     * @param p The point on the surface for which the normal vector is to be calculated.
+     * @param point The point on the surface for which the normal vector is to be calculated.
      * @return The normal vector at the specified point.
      */
     @Override
-    public Vector getNormal(Point p) {
-        return p.subtract(this.center).normalize();
+    public Vector getNormal(Point point) {
+        return point.subtract(this.center).normalize();
+    }
+
+    @Override
+    public List<Point> findIntersections(Ray ray) {
+        return null;
     }
 }
