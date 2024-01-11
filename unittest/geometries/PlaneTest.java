@@ -38,28 +38,36 @@ class PlaneTest {
 
     @Test
     void testFindIntersections() {
-        Plane plane=new Plane(new Point(1,0,1),new Point(0,0,1),new Point(0,1,1));
+        Plane plane = new Plane(new Point(1, 0, 1), new Point(0, 0, 1), new Point(0, 1, 1));
+
         // ============ Equivalence Partitions Tests ==============
         // TC01: The ray cuts the plane
-        final var result1=plane.findIntersections(new Ray(new Point(0,0,4),new Vector(-4,0,-4))).stream().toList();
-        assertEquals(1, result1.size(),"dfv");
-        assertEquals(List.of(new Point(-3,0,1)),result1,"f");
+        final var result1 = plane.findIntersections(new Ray(new Point(0, 0, 4), new Vector(-4, 0, -4))).stream().toList();
+        assertEquals(1, result1.size(), "ERROR: when the ray cuts the plane");
+        assertEquals(List.of(new Point(-3, 0, 1)), result1, "ERROR: when the ray cuts the plane");
+
         // TC02: The ray doesn't cut the plane
-        assertNull(plane.findIntersections(new Ray(new Point(0,0,2),new Vector(3.4,-3,1.5))),"d");
+        assertNull(plane.findIntersections(new Ray(new Point(0, 0, 2), new Vector(3.4, -3, 1.5))), "ERROR: when the ray doesn't cut the plane");
+
         // =============== Boundary Values Tests ==================
         //TC11: The ray is parallel to the plane
-        assertNull(plane.findIntersections(new Ray(new Point(0,0,2),new Vector(0,1,0))),"f");
+        assertNull(plane.findIntersections(new Ray(new Point(0, 0, 2), new Vector(0, 1, 0))), "ERROR: when the ray is parallel to the plane");
+
         //TC12: The ray merges with the plane
-        assertNull(plane.findIntersections(new Ray(new Point(0,0,1),new Vector(0,1,0))),"");
+        assertNull(plane.findIntersections(new Ray(new Point(0, 0, 1), new Vector(0, 1, 0))), "ERROR: when the ray merges with the plane");
+
         //TC13: The ray is perpendicular and starts before the plane
-        final var result5=plane.findIntersections(new Ray(new Point(1,1,0),new Vector(0,0,1))).stream().toList();
-        assertEquals(1,result5.size(),"");
-        assertEquals(List.of(new Point(1,1,1)),result5,"d");
+        final var result2 = plane.findIntersections(new Ray(new Point(1, 1, 0), new Vector(0, 0, 1))).stream().toList();
+        assertEquals(1, result2.size(), "ERROR: when the ray is perpendicular and starts before the plane");
+        assertEquals(List.of(new Point(1, 1, 1)), result2, "ERROR: when the ray is perpendicular and starts before the plane");
+
         //TC13: The ray is perpendicular and starts at the plane
-        assertNull(plane.findIntersections(new Ray(new Point(1,1,1),new Vector(0,0,1))),"d");
+        assertNull(plane.findIntersections(new Ray(new Point(1, 1, 1), new Vector(0, 0, 1))), "ERROR: when the ray is perpendicular and starts at the plane");
+
         //TC13: The ray is perpendicular and starts after the plane
-        assertNull(plane.findIntersections(new Ray(new Point(1,1,2),new Vector(0,0,1))),"");
+        assertNull(plane.findIntersections(new Ray(new Point(1, 1, 2), new Vector(0, 0, 1))), "ERROR: when the ray is perpendicular and starts after the plane");
+
         //TC14: The ray starts in a plane (not perpendicular)
-        assertNull(plane.findIntersections(new Ray(new Point(0,0,1),new Vector(-2,0,1))),"ds");
+        assertNull(plane.findIntersections(new Ray(new Point(0, 0, 1), new Vector(-2, 0, 1))), "ERROR: when the ray starts in a plane (not perpendicular)");
     }
 }

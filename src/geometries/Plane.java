@@ -10,6 +10,8 @@ import primitives.Vector;
 
 import java.util.List;
 
+import static primitives.Util.isZero;
+
 /**
  * The Plane class represents a flat surface in three-dimensional space.
  */
@@ -77,9 +79,28 @@ public class Plane implements Geometry {
         return normal;
     }
 
+    /**
+     * Finds the intersection points between the given ray and the plane.
+     * Returns a list of intersection points or null if there are no intersections.
+     *
+     * @param ray The ray for which intersections are to be found.
+     * @return A list of intersection points with the plane or null if there are no intersections.
+     */
     @Override
     public List<Point> findIntersections(Ray ray) {
-        double t=(normal.dotProduct(referencePoint.subtract(ray.getHead())))/(normal.dotProduct(ray.getDirection()));
+        // Check if the ray is parallel or almost parallel to the plane
+        if (isZero(normal.dotProduct(ray.getDirection())))
+            return null;
+
+        // Calculate the parameter 't' for the intersection point using the plane equation
+        double t = normal.dotProduct(referencePoint.subtract(ray.getHead())) / normal.dotProduct(ray.getDirection());
+
+        // Check if the intersection point is behind the ray or at the origin
+        if (t < 0 || isZero(t))
+            return null;
+
+        // Return a list containing the intersection point
         return List.of(ray.getPoint(t));
     }
+
 }

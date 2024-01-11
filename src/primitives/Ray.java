@@ -1,5 +1,7 @@
 package primitives;
 
+import static primitives.Util.isZero;
+
 /**
  * The Ray class represents a geometric ray in three-dimensional space.
  * It is used in more complex geometric shapes such as cylinders, etc.
@@ -52,6 +54,8 @@ public class Ray {
      * @return A point along the ray at the specified parameter value.
      */
     public Point getPoint(double t) {
+        if(isZero(t))
+            return head;
         return head.add(direction.scale(t));
     }
 }
