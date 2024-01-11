@@ -1,30 +1,57 @@
 package primitives;
-/**
-* The Ray class is a basic class.
- * is used by us in the more complicated geometric shapes,
- * such as a cylinder, etc
- */
 
-public class Ray
-{
-    /**The variable stores a point representing the head of the ray*/
+/**
+ * The Ray class represents a geometric ray in three-dimensional space.
+ * It is used in more complex geometric shapes such as cylinders, etc.
+ */
+public class Ray {
+    /**
+     * The variable stores a point representing the head of the ray.
+     */
     final private Point head;
-    /**The variable stores the direction of the ray, the variable is of vector type*/
+
+    /**
+     * The variable stores the direction of the ray, the variable is of vector type.
+     */
     final private Vector direction;
 
-    /**get function for the head variable*/
+    /**
+     * Constructs a new Ray object with the given head point and direction vector.
+     * The direction vector is normalized during construction.
+     *
+     * @param point The head point of the ray.
+     * @param vector The direction vector of the ray.
+     */
+    public Ray(Point point, Vector vector) {
+        this.head = point;
+        this.direction = vector.normalize();
+    }
+
+    /**
+     * Retrieves the head point of the ray.
+     *
+     * @return The head point of the ray.
+     */
     public Point getHead() {
         return head;
     }
-    /**get function for the direction variable*/
+
+    /**
+     * Retrieves the direction vector of the ray.
+     *
+     * @return The direction vector of the ray.
+     */
     public Vector getDirection() {
         return direction;
     }
 
-   /** A constructor that initializes the ray according to values received from the user*/
-    public Ray(Point p, Vector v)
-    {
-        this.head=p;
-        this.direction=v.normalize();
+    /**
+     * Calculates and returns a point along the ray at a given parameter value 't'.
+     *
+     * @param t The parameter value along the ray.
+     * @return A point along the ray at the specified parameter value.
+     */
+    public Point getPoint(double t) {
+        return head.add(direction.scale(t));
     }
 }

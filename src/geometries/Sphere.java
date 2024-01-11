@@ -45,6 +45,20 @@ public class Sphere extends RadialGeometry {
 
     @Override
     public List<Point> findIntersections(Ray ray) {
+        if(center.equals(ray.getHead()))
+            return List.of(ray.getPoint(radius));
+        Vector u= center.subtract(ray.getHead()); //We will create a vector u that will connect the center of the circle to the camera
+        double tm = u.dotProduct(ray.getDirection());
+        double d= Math.sqrt(u.lengthSquared()-tm*tm);
+        if(d>=radius)
+            return null;
+        double th=Math.sqrt(radius*radius-d*d);
+        double t1=tm-th;
+        double t2=tm+th;
+        if(t1<=0 && t2 > 0)
+            return List.of(ray.getPoint(t2));
+        else if(t2>0)
+            return List.of(ray.getPoint(t1),ray.getPoint(t2));
         return null;
     }
 }

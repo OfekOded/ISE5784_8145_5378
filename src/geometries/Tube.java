@@ -6,6 +6,8 @@ package geometries;
 
 import primitives.*;
 
+import java.util.List;
+
 /**
  * The Tube class represents a three-dimensional tube-like geometry.
  * It extends the RadialGeometry abstract class and implements the Geometry interface.
@@ -51,5 +53,10 @@ public class Tube extends RadialGeometry {
 
         // Calculate and return the normalized vector from point 'o' to the given point
         return p.subtract(o).normalize();
+    }
+
+    @Override
+    public List<Point> findIntersections(Ray ray) {
+        return null;
     }
 }

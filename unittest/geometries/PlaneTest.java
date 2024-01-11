@@ -2,7 +2,10 @@ package geometries;
 
 import org.junit.jupiter.api.Test;
 import primitives.Point;
+import primitives.Ray;
 import primitives.Vector;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,5 +38,28 @@ class PlaneTest {
 
     @Test
     void testFindIntersections() {
+        Plane plane=new Plane(new Point(1,0,1),new Point(0,0,1),new Point(0,1,1));
+        // ============ Equivalence Partitions Tests ==============
+        // TC01: The ray cuts the plane
+        final var result1=plane.findIntersections(new Ray(new Point(0,0,4),new Vector(-4,0,-4))).stream().toList();
+        assertEquals(1, result1.size(),"dfv");
+        assertEquals(List.of(new Point(-3,0,1)),result1,"f");
+        // TC02: The ray doesn't cut the plane
+        assertNull(plane.findIntersections(new Ray(new Point(0,0,2),new Vector(3.4,-3,1.5))),"d");
+        // =============== Boundary Values Tests ==================
+        //TC11: The ray is parallel to the plane
+        assertNull(plane.findIntersections(new Ray(new Point(0,0,2),new Vector(0,1,0))),"f");
+        //TC12: The ray merges with the plane
+        assertNull(plane.findIntersections(new Ray(new Point(0,0,1),new Vector(0,1,0))),"");
+        //TC13: The ray is perpendicular and starts before the plane
+        final var result5=plane.findIntersections(new Ray(new Point(1,1,0),new Vector(0,0,1))).stream().toList();
+        assertEquals(1,result5.size(),"");
+        assertEquals(List.of(new Point(1,1,1)),result5,"d");
+        //TC13: The ray is perpendicular and starts at the plane
+        assertNull(plane.findIntersections(new Ray(new Point(1,1,1),new Vector(0,0,1))),"d");
+        //TC13: The ray is perpendicular and starts after the plane
+        assertNull(plane.findIntersections(new Ray(new Point(1,1,2),new Vector(0,0,1))),"");
+        //TC14: The ray starts in a plane (not perpendicular)
+        assertNull(plane.findIntersections(new Ray(new Point(0,0,1),new Vector(-2,0,1))),"ds");
     }
 }

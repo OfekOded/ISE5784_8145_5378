@@ -13,6 +13,8 @@ public class Triangle extends Polygon{
 
     @Override
     public List<Point> findIntersections(Ray ray) {
+        super.plane.findIntersections(ray);
+
         return null;
     }
 }
