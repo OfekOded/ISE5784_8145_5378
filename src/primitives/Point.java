@@ -1,29 +1,43 @@
 package primitives;
+
 /**
- *The Point class is a primitive class that will help us do more complex things
- * like vector etc. The class inherits from the Double3 class
+ * The Point class represents a point in three-dimensional space.
+ * It is a primitive class used for more complex operations, such as vectors.
+ * This class inherits from the Double3 class.
  */
 public class Point {
     /** The field of coordinate values */
     final protected Double3 xyz;
 
-    /** I had to add this in order to fix the main */
-    public static final Point ZERO = new Point(0,0,0);
+    /** A constant Point representing the origin (0, 0, 0) */
+    public static final Point ZERO = new Point(0, 0, 0);
 
-    /** Constructor that receives three coordinates and initializes Point */
-
-    public Point(double d1,double d2, double d3) {
-        this.xyz = new Double3(d1,d2,d3);
+    /**
+     * Constructs a Point with the specified coordinates.
+     *
+     * @param d1 The x-coordinate.
+     * @param d2 The y-coordinate.
+     * @param d3 The z-coordinate.
+     */
+    public Point(double d1, double d2, double d3) {
+        this.xyz = new Double3(d1, d2, d3);
     }
 
-    /** Constructor that accepts an object of type Double3 and initializes Point */
-
+    /**
+     * Constructs a Point with the specified Double3 object.
+     *
+     * @param xyz The Double3 object to initialize the Point.
+     */
     Point(Double3 xyz) {
         this.xyz = xyz;
     }
 
-    /** According to the instructions, there is no need to write comments */
-
+    /**
+     * Checks if this Point is equal to another object.
+     *
+     * @param obj The object to compare with this Point.
+     * @return True if the objects are equal, false otherwise.
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -33,40 +47,54 @@ public class Point {
                 Util.isZero(xyz.d3 - other.xyz.d3);
     }
 
-    /** According to the instructions, there is no need to write comments */
-
+    /**
+     * Returns a string representation of this Point.
+     *
+     * @return A string representation of the Point.
+     */
     @Override
     public String toString() {
         return "point:" + super.toString();
     }
 
     /**
+     * Adds the given vector to this point, returning a new point.
      *
-     * The method returns the point of this object plus the vector that the method received
-     * @param v
-     * @return
+     * @param v The vector to add.
+     * @return A new point resulting from the addition.
      */
-
     public Point add(Vector v){
         return new Point(xyz.add(v.xyz));
     }
 
-    /** The method returns a vector by subtracting the head (the point of this object) minus the tail (the object we got) */
-
+    /**
+     * Subtracts the given point from this point, returning a new vector.
+     *
+     * @param tail The point to subtract.
+     * @return A new vector resulting from the subtraction.
+     */
     public Vector subtract(Point tail){
-       return new Vector(xyz.subtract(tail.xyz));
+        return new Vector(xyz.subtract(tail.xyz));
     }
 
-    /** The function returns the distance between the point of this object and the object we received squared */
-
+    /**
+     * Calculates the squared distance between this point and another point.
+     *
+     * @param anotherPoint The other point.
+     * @return The squared distance between the points.
+     */
     public Double distanceSquared(Point anotherPoint){
-        return (xyz.d1-anotherPoint.xyz.d1)*(this.xyz.d1-anotherPoint.xyz.d1)+
-                (this.xyz.d2-anotherPoint.xyz.d2)*(this.xyz.d2-anotherPoint.xyz.d2)+
-                (this.xyz.d3-anotherPoint.xyz.d3)*(this.xyz.d3-anotherPoint.xyz.d3);
+        return (xyz.d1 - anotherPoint.xyz.d1) * (this.xyz.d1 - anotherPoint.xyz.d1) +
+                (this.xyz.d2 - anotherPoint.xyz.d2) * (this.xyz.d2 - anotherPoint.xyz.d2) +
+                (this.xyz.d3 - anotherPoint.xyz.d3) * (this.xyz.d3 - anotherPoint.xyz.d3);
     }
 
-    /** The function returns the distance between the point of this object and the object we received */
-
+    /**
+     * Calculates the distance between this point and another point.
+     *
+     * @param anotherPoint The other point.
+     * @return The distance between the points.
+     */
     public double distance(Point anotherPoint){
         return Math.sqrt(distanceSquared(anotherPoint));
     }

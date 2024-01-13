@@ -16,8 +16,8 @@ public interface Geometry extends Intersectable {
     /**
      * Calculates and returns the normal vector at the specified point on the surface of the geometry.
      *
-     * @param p The point on the surface for which the normal vector is to be calculated.
+     * @param point The point on the surface for which the normal vector is to be calculated.
      * @return The normal vector at the specified point.
      */
-    Vector getNormal(Point p);
+    Vector getNormal(Point point);
 }

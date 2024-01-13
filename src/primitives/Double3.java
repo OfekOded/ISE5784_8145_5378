@@ -42,6 +42,15 @@ public class Double3 {
         this.d3 = value;
     }
 
+    /**
+     * This method overrides the equals method in the Object class.
+     * It compares the current Double3 object with another object and
+     * returns true if they are equal, i.e., if the other object is also
+     * a Double3 object with approximately equal d1, d2, and d3 values.
+     *
+     * @param obj The object to compare with the current Double3 object.
+     * @return True if the objects are equal, false otherwise.
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -51,11 +60,28 @@ public class Double3 {
                 && isZero(d3 - other.d3);
     }
 
+    /**
+     * This method overrides the hashCode method in the Object class.
+     * It generates a hash code based on the rounded sum of the d1, d2, and d3 values.
+     *
+     * @return The generated hash code.
+     */
     @Override
-    public int hashCode() { return (int) Math.round(d1 + d2 + d3); }
+    public int hashCode() {
+        return (int) Math.round(d1 + d2 + d3);
+    }
 
+    /**
+     * This method overrides the toString method in the Object class.
+     * It returns a string representation of the Double3 object in the format "(d1, d2, d3)".
+     *
+     * @return A string representation of the Double3 object.
+     */
     @Override
-    public String toString() { return "(" + d1 + "," + d2 + "," + d3 + ")"; }
+    public String toString() {
+        return "(" + d1 + "," + d2 + "," + d3 + ")";
+    }
+
 
     /**
      * Sum two floating point triads into a new triad where each couple of numbers
