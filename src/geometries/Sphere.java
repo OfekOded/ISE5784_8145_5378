@@ -8,6 +8,8 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
+import javax.management.openmbean.OpenMBeanOperationInfo;
+import java.util.Comparator;
 import java.util.List;
 
 import static primitives.Util.isZero;
@@ -81,9 +83,11 @@ public class Sphere extends RadialGeometry {
         // Check for valid intersection points
         if ((t1 < 0 || isZero(t1)) && t2 > 0)
             return List.of(ray.getPoint(t2));
-        else if (t2 > 0)
-            return List.of(ray.getPoint(t1), ray.getPoint(t2));
-
+        else if (t2 > 0) {
+            Point point1 = ray.getPoint(t1);
+            Point point2 = ray.getPoint(t2);
+            return List.of(point1, point2).stream().sorted(Comparator.comparingDouble(p ->p.distance(ray.getHead()))).toList();
+        }
         // No valid intersection points
         return null;
     }

@@ -1,0 +1,16 @@
+package primitives;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class RayTest {
+
+    @Test
+    void getPoint() {
+        Ray ray = new Ray(new Point(1,0,0),new Vector(1,0,0));
+        assertEquals(new Point(2,0,0),ray.getPoint(1),"");
+        assertEquals(new Point(0,0,0),ray.getPoint(-1),"");
+        assertEquals(new Point(1,0,0),ray.getPoint(0),"");
+    }
+}
