@@ -20,9 +20,11 @@ import static org.junit.jupiter.api.Assertions.*;
  * A set of test cases for the Sphere class, focusing on the getNormal method.
  */
 class SphereTest {
-    private final Point p001 = new Point(0, 0, 1);
-    private final Point p100 = new Point(1, 0, 0);
-    private final Vector v001 = new Vector(0, 0, 1);
+    private final Point point3 = new Point(0, 0, 1);
+    private final Point point1 = new Point(1, 0, 0);
+    private final Vector vector1 = new Vector(1,0,0);
+    private final Vector vector2 = new Vector(0,1,0);
+    private final Vector vector3 = new Vector(0, 0, 1);
 
     /**
      * Test case: Checking the normal vector at a specific point on the surface of the sphere.
@@ -42,7 +44,7 @@ class SphereTest {
      */
     @Test
     public void testFindIntersections() {
-        Sphere sphere = new Sphere(1d, p100);
+        Sphere sphere = new Sphere(1d, point1);
         final Point gp1 = new Point(0.0651530771650466, 0.355051025721682, 0);
         final Point gp2 = new Point(1.53484692283495, 0.844948974278318, 0);
         final var exp = List.of(gp1, gp2);
@@ -92,25 +94,25 @@ class SphereTest {
         assertEquals(List.of(new Point(1, 1, 0)), result15, "ERROR: when ray starts inside (through the center)");
 
         // TC16: Ray starts at the center (1 point)
-        final var result16 =sphere.findIntersections(new Ray(new Point(1,0,0),new Vector(0,0,1))).stream().toList();
+        final var result16 =sphere.findIntersections(new Ray(new Point(1,0,0),vector3)).stream().toList();
         assertEquals(1,result16.size(),"ERROR: when ray starts at the center (through the center)");
         assertEquals(List.of(new Point(1,0,1)),result16,"ERROR: when ray starts at the center (through the center)");
 
         // TC17: Ray starts at sphere and goes outside (0 points)
-        assertNull(sphere.findIntersections(new Ray(new Point(1,1,0),new Vector(0,1,0))),"ERROR: when ray starts at sphere and goes outside (through the center)");
+        assertNull(sphere.findIntersections(new Ray(new Point(1,1,0),vector2)),"ERROR: when ray starts at sphere and goes outside (through the center)");
 
         // TC18: Ray starts after sphere (0 points)
-        assertNull(sphere.findIntersections(new Ray(new Point(1,3,0),new Vector(0,1,0))),"ERROR: when ray starts after sphere (through the center)");
+        assertNull(sphere.findIntersections(new Ray(new Point(1,3,0),vector2)),"ERROR: when ray starts after sphere (through the center)");
 
         // **** Group: Ray's line is tangent to the sphere (all tests 0 points)
         // TC19: Ray starts before the tangent point
-        assertNull(sphere.findIntersections(new Ray(new Point(0,-1,0),new Vector(1,0,0))),"ERROR: when ray starts before the tangent point");
+        assertNull(sphere.findIntersections(new Ray(new Point(0,-1,0),vector1)),"ERROR: when ray starts before the tangent point");
         // TC20: Ray starts at the tangent point
-        assertNull(sphere.findIntersections(new Ray(new Point(1,-1,0),new Vector(1,0,0))),"ERROR: when ray starts at the tangent point");
+        assertNull(sphere.findIntersections(new Ray(new Point(1,-1,0),vector1)),"ERROR: when ray starts at the tangent point");
         // TC21: Ray starts after the tangent point
-        assertNull(sphere.findIntersections(new Ray(new Point(3,-1,0),new Vector(1,0,0))),"ERROR: when ray starts after the tangent point");
+        assertNull(sphere.findIntersections(new Ray(new Point(3,-1,0),vector1)),"ERROR: when ray starts after the tangent point");
         // **** Group: Special cases
         // TC22: Ray's line is outside, ray is orthogonal to ray start to sphere's center line
-        assertNull(sphere.findIntersections(new Ray(new Point(-1,0,0),new Vector(0,0,1))),"ERROR: when ray's line is outside, ray is orthogonal to ray start to sphere's center line");
+        assertNull(sphere.findIntersections(new Ray(new Point(-1,0,0),vector3)),"ERROR: when ray's line is outside, ray is orthogonal to ray start to sphere's center line");
     }
 }
