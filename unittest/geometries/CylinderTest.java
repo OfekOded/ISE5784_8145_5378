@@ -19,8 +19,7 @@ class CylinderTest {
     void testGetNormal() {
         // Create a test cylinder with radius 3, axis along z-axis, and height 8
         Cylinder cylinder = new Cylinder(3, new Ray(new Point(0, 0, 0), new Vector(0, 0, 1)), 8);
-        // ========
-        // ==== Equivalence Partitions Tests ==============
+        // ============ Equivalence Partitions Tests ==============
         // TC01: Point (1, 1, 8) on the surface of the cylinder
         assertEquals(new Vector(0, 0, 1), cylinder.getNormal(new Point(1, 1, 8)),
                 "An error in calculating the normal for the upper base of the cylinder");

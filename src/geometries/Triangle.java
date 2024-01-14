@@ -2,8 +2,10 @@ package geometries;
 
 import primitives.Point;
 import primitives.Ray;
+import primitives.Util;
 import primitives.Vector;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static primitives.Util.isZero;
@@ -26,35 +28,44 @@ public class Triangle extends Polygon {
     }
 
     /**
-     * Finds the intersection points between the given ray and the triangle.
+     * Overrides the findIntersections method to find the intersection points
+     * between a ray and a polygon in 3D space.
      *
-     * @param ray The ray to find intersections with.
-     * @return A list of intersection points, or null if there are no intersections.
+     * @param ray The ray for which intersections with the polygon are to be found.
+     * @return A list of intersection points if they exist, or null if no intersections are found.
      */
     @Override
     public List<Point> findIntersections(Ray ray) {
-        // If the ray doesn't intersect the plane of the triangle, return null
-        if (plane.findIntersections(ray) == null)
+        // Find intersections with the plane containing the polygon.
+        List<Point> Intersection = plane.findIntersections(ray);
+
+        // If there are no intersections with the plane, return null.
+        if (Intersection == null)
             return null;
 
-        // Calculate vectors from the ray's head to each vertex of the triangle
-        Vector v1 = vertices.getFirst().subtract(ray.getHead());
-        Vector v2 = vertices.get(1).subtract(ray.getHead());
-        Vector v3 = vertices.getLast().subtract(ray.getHead());
+        // Create a list to store vectors from the ray's head to each vertex of the polygon.
+        List<Vector> vectorsList = new LinkedList<>();
+        for (Point vertex : vertices)
+            vectorsList.add(vertex.subtract(ray.getHead()));
 
-        // Calculate normals of the three triangles formed by the ray's head and each pair of vertices
-        Vector n1 = v1.crossProduct(v2).normalize();
-        Vector n2 = v2.crossProduct(v3).normalize();
-        Vector n3 = v3.crossProduct(v1).normalize();
+        // Create a list to store normals of the edges formed by consecutive vectors.
+        List<Vector> normals = new LinkedList<>();
+        for (int i = 0; i < vectorsList.size(); i++)
+            normals.add(vectorsList.get(i).crossProduct(vectorsList.get((i + 1) % vectorsList.size())));
 
-        // Check if the ray's direction is within the half-spaces defined by the normals
-        if (((ray.getDirection().dotProduct(n1) > 0) && (ray.getDirection().dotProduct(n2) > 0) && (ray.getDirection().dotProduct(n3) > 0))
-                || ((ray.getDirection().dotProduct(n1) < 0) && (ray.getDirection().dotProduct(n2) < 0) && (ray.getDirection().dotProduct(n3) < 0))) {
-            // If true, return the intersection points with the plane
-            return plane.findIntersections(ray);
-        }
+        // Initialize a flag to check if all normals have the same sign with respect to the ray's direction.
+        boolean flag = true;
 
-        // If the ray's direction is not within the half-spaces, return null
+        // Check the sign consistency of the dot products between each normal and the ray's direction.
+        for (int i = 0; i < normals.size(); i++)
+            if (!Util.compareSign(normals.get(i).dotProduct(ray.getDirection()), normals.get((i + 1) % normals.size()).dotProduct(ray.getDirection())))
+                flag = false;
+
+        // If all dot products have the same sign, return the intersection points.
+        if (flag)
+            return Intersection;
+
+        // If the signs are inconsistent, return null.
         return null;
     }
 }

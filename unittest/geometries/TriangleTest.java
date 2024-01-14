@@ -37,16 +37,12 @@ class TriangleTest {
 
         // =============== Boundary Values Tests ==================
         //TC11: The point on the side
-        final var result2=triangle.findIntersections(new Ray(head,new Vector(-4,0,-4))).stream().toList();
-        assertEquals(1,result2.size(),"ERROR: when the point on the side");
-        assertEquals(List.of(new Point(-4,0,0)),result2,"ERROR: when the point on the side");
+        assertNull(triangle.findIntersections(new Ray(head,new Vector(-4,0,-4))),"ERROR: when the point on the side");
 
         //TC12: The point is on a vertex
-        final var result3=triangle.findIntersections(new Ray(head,new Vector(-4,-3,-4))).stream().toList();
-        assertEquals(1,result3.size(),"ERROR: when the point is on a vertex");
-        assertEquals(List.of(Vertex3),result3,"ERROR: when the point is on a vertex");
+          assertNull(triangle.findIntersections(new Ray(head,new Vector(-4,-3,-4))),"ERROR: when the point is on a vertex");
 
         //TC13: The point on the continuation of the side
-        assertNull(triangle.findIntersections(new Ray(head,new Vector(-3,-4.5,-4))),"ERROR: when the point on the continuation of the side");
+            assertNull(triangle.findIntersections(new Ray(head,new Vector(-3,-4.5,-4))),"ERROR: when the point on the continuation of the side");
     }
 }

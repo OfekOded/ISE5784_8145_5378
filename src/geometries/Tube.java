@@ -49,8 +49,7 @@ public class Tube extends RadialGeometry {
             return v1.normalize();
 
         // Calculate the point 'o' on the axis corresponding to the projection 't'
-        Point o = axis.getHead().add(axis.getDirection().scale(t));
-
+        Point o = axis.getPoint(t);
         // Calculate and return the normalized vector from point 'o' to the given point
         return point.subtract(o).normalize();
     }

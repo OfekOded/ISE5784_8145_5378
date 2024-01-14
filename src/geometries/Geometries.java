@@ -62,9 +62,7 @@ public class Geometries implements Intersectable {
             }
         }
         if (intersectionsPoints != null)
-            intersectionsPoints = intersectionsPoints.stream()
-                    .sorted(Comparator.comparingDouble(p -> p.distance(ray.getHead())))
-                    .toList();
+            intersectionsPoints = intersectionsPoints.stream().sorted(Comparator.comparingDouble(p -> p.distance(ray.getHead()))).toList();
         return intersectionsPoints;
     }
 }

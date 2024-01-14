@@ -10,12 +10,12 @@ class RayTest {
     void getPoint() {
         Ray ray = new Ray(new Point(1,0,0),new Vector(1,0,0));
         // ============ Equivalence Partitions Tests ==============
-        //TC01: The point on the side
-        assertEquals(new Point(2,0,0),ray.getPoint(1),"");
-        //TC02: The point on the side
-        assertEquals(new Point(0,0,0),ray.getPoint(-1),"");
+        //TC01: test when t is positive
+        assertEquals(new Point(2,0,0),ray.getPoint(1),"Error in getPoint test when t is positive");
+        //TC02: test when t is negative
+        assertEquals(new Point(0,0,0),ray.getPoint(-1),"Error in getPoint test when t is negative");
         // =============== Boundary Values Tests ==================
-        //TC01: The point on the side
-        assertEquals(new Point(1,0,0),ray.getPoint(0),"");
+        //TC01: test when t is zero
+        assertEquals(new Point(1,0,0),ray.getPoint(0),"Error in getPoint test when t is zero");
     }
 }

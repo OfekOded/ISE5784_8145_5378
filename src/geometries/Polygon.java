@@ -6,6 +6,7 @@ import static primitives.Util.isZero;
 
 import primitives.Point;
 import primitives.Ray;
+import primitives.Util;
 import primitives.Vector;
 
 /**
@@ -86,6 +87,21 @@ public class Polygon implements Geometry {
 
     @Override
     public List<Point> findIntersections(Ray ray) {
-        return null;
+        // If the ray doesn't intersect the plane of the polygon, return null
+        if (plane.findIntersections(ray) == null)
+            return null;
+        int i=1;
+        Vector v1 = vertices.getFirst().subtract(ray.getHead());
+        Vector v2 = vertices.get(1).subtract(ray.getHead());
+        Vector n1 = v1.crossProduct(v2).normalize();
+        double sign= ray.getDirection().dotProduct(n1);
+        while (i< size) {
+            if(!Util.compareSign(sign,vertices.get(i).subtract(ray.getHead()).crossProduct(vertices.get((i+1)%size).subtract(ray.getHead())).dotProduct(ray.getDirection())))
+            {
+                return null;
+            }
+            i++;
+        }
+        return plane.findIntersections(ray);
     }
 }
