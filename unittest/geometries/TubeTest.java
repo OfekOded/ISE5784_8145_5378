@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * A set of test cases for the Tube class, focusing on the getNormal method.
  */
-class TubeTests {
+class TubeTest {
 
     /**
      * Test case: Checking the normal vector at specific points on the surface of the tube.

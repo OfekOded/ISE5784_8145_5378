@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class PlaneTest {
     Point point1 = new Point(1, 0, 0);
     Point point2 = new Point(0, 1, 0);
-    Point point5 = new Point(0, 0, 0);
+    Point point3 = new Point(0, 0, 0);
     @Test
     void getNormal() {
 

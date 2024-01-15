@@ -5,28 +5,28 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class VectorTest {
-    
-Vector vector1 = new Vector(1,2,3);
-Vector vector2 = new Vector(1,2,2);
-Vector vector3 = new Vector(-1,-2,-3);
-Vector vector4 = new Vector(-2,-4,-6);
+
+    Vector vector1 = new Vector(1,2,3);
+    Vector vector2 = new Vector(1,2,2);
+    Vector vector3 = new Vector(-1,-2,-3);
+    Vector vector4 = new Vector(-2,-4,-6);
 
     @Test
-    void lengthSquared() {
+    void testLengthSquared() {
         // ============ Equivalence Partitions Tests ==============
         // TC01: Check the integrity of the lengthSquared()
         assertEquals(9,vector2.lengthSquared(),"ERROR: lengthSquared() wrong value");
     }
 
     @Test
-    void length() {
+    void testLength() {
         // ============ Equivalence Partitions Tests ==============
         // TC01: Check the integrity of the length()
         assertEquals(3,vector2.length(),"ERROR: length() wrong value");
     }
 
     @Test
-    void add() {
+    void testAdd() {
         // ============ Equivalence Partitions Tests ==============
         // TC01: Checks the correctness of add()
         assertEquals(vector3,vector1.add(vector4),"ERROR: Vector + Vector does not work correctly");
@@ -37,7 +37,7 @@ Vector vector4 = new Vector(-2,-4,-6);
     }
 
     @Test
-    void subtract(){
+    void testSubtract(){
         // ============ Equivalence Partitions Tests ==============
         // TC01: Checks the correctness of subtract()
         assertEquals(new Vector(3,6,9),vector1.subtract(vector4),"ERROR: Vector + Vector does not work correctly");
@@ -48,16 +48,16 @@ Vector vector4 = new Vector(-2,-4,-6);
     }
 
     @Test
-    void dotProduct() {
+    void testDotProduct() {
     }
 
     @Test
-    void crossProduct() {
+    void testCrossProduct() {
     }
 
 
     @Test
-    void normalize() {
+    void testNormalize() {
         // ============ Equivalence Partitions Tests ==============
         // TC01:Checks if the normal vector is a unit vector
         assertEquals(1,vector1.normalize().length(),"ERROR: the normalized vector is not a unit vector");

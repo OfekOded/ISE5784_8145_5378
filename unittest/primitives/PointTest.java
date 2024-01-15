@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * A set of test cases for the Point class, covering various methods such as add, subtract, distanceSquared, and distance.
  */
-class PointTests {
+class PointTest {
 
     Point point1 = new Point(1, 2, 3);
     Point point2 = new Point(2, 4, 5);
