@@ -49,10 +49,25 @@ class VectorTest {
 
     @Test
     void testDotProduct() {
+        // ============ Equivalence Partitions Tests ==============
+        // TC01: Checks if vectors are perpendicular return zero correctly
+        assertEquals(0,vector1.dotProduct(new Vector(0,3,-2)),"ERROR: dotProduct() for orthogonal vectors is not zero");
+        //TC02 Checks if dotProduct() return the correct value
+        assertEquals(-28,vector1.dotProduct(vector4), "ERROR: dotProduct() wrong value");
     }
 
     @Test
     void testCrossProduct() {
+        // ============ Equivalence Partitions Tests ==============
+        // TC01: Checks if crossProduct() return the correct value
+        assertEquals(Math.sqrt(182),vector1.crossProduct(new Vector(0,3,-2)).length(),"ERROR: crossProduct() wrong result length");
+        // TC02: Checks crossProduct() result is orthogonal to its operands
+        assertEquals(0,vector1.crossProduct(new Vector(0,3,-2)).dotProduct(vector1),"ERROR: crossProduct() wrong result length");
+        assertEquals(0,vector1.crossProduct(new Vector(0,3,-2)).dotProduct(vector3),"ERROR: crossProduct() wrong result length");
+        // TC03 Checks crossProduct throw an exception for parallel vectors
+        assertThrows(IllegalArgumentException.class,()->vector1.crossProduct(vector4),"ERROR: crossProduct() for parallel vectors does not throw an exception");
+
+
     }
 
 
