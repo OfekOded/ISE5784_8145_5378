@@ -168,6 +168,10 @@ public class Camera implements Cloneable {
      * @return The constructed ray for the specified pixel.
      */
     public Ray constructRay(int nX, int nY, int j, int i) {
-        return null;
+        //Image center
+        Point Pc=cameraLocation.add(Vto.scale(VpDistance));
+        //Ratio
+        double Ry=height/nY;
+        double Rx=width/nX;
     }
 }
