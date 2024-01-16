@@ -83,4 +83,5 @@ class VectorTest {
         //TC10  test that the vectors are co-lined
         assertThrows(IllegalArgumentException.class,()->vector1.crossProduct(vector1.normalize()),"ERROR: the normalized vector is not parallel to the original one");
     }
+    //eim
 }
