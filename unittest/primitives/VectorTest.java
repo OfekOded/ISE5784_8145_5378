@@ -75,13 +75,12 @@ class VectorTest {
     void testNormalize() {
         // ============ Equivalence Partitions Tests ==============
         // TC01:Checks if the normal vector is a unit vector
-        assertEquals(1,vector1.normalize().length(),"ERROR: the normalized vector is not a unit vector");
+        assertEquals(1, vector1.normalize().length(), "ERROR: the normalized vector is not a unit vector");
         // TC02:Checks if the normal vector is not reversed
-        assertFalse(Util.compareSign(vector1.dotProduct(vector1.normalize()),-1),"ERROR: the normalized vector is opposite to the original one");
+        assertFalse(Util.compareSign(vector1.dotProduct(vector1.normalize()), -1), "ERROR: the normalized vector is opposite to the original one");
 
         // =============== Boundary Values Tests ==================
         //TC10  test that the vectors are co-lined
-        assertThrows(IllegalArgumentException.class,()->vector1.crossProduct(vector1.normalize()),"ERROR: the normalized vector is not parallel to the original one");
+        assertThrows(IllegalArgumentException.class, () -> vector1.crossProduct(vector1.normalize()), "ERROR: the normalized vector is not parallel to the original one");
     }
-    //eim
 }

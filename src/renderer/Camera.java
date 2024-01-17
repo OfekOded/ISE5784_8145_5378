@@ -74,7 +74,7 @@ public class Camera implements Cloneable {
                 throw new IllegalArgumentException("The input of the height variable is incorrect");
             if(camera.width<0)
                 throw new IllegalArgumentException("The input of the width variable is incorrect");
-            this.camera.Vright=camera.Vto.crossProduct(camera.Vup).normalize();
+            this.camera.Vright=camera.Vup.crossProduct(camera.Vto).normalize();
             try {
                 return (Camera) camera.clone();
             } catch (CloneNotSupportedException e) {
@@ -173,5 +173,17 @@ public class Camera implements Cloneable {
         //Ratio
         double Ry=height/nY;
         double Rx=width/nX;
+        double Yi=-(i- (double) (nY - 1) /2)*Ry;
+        double Xj=(j- (double) (nX - 1) /2)*Rx;
+        Point Pij;
+        if(Xj==0 && Yi==0)
+            Pij=Pc;
+        else if (Xj==0)
+            Pij=Pc.add(Vup.scale(Yi));
+        else if(Yi==0)
+            Pij=Pc.add(Vright.scale(Xj));
+        else
+            Pij=Pc.add(Vright.scale(Xj).add(Vup.scale(Yi)));
+        return new Ray(cameraLocation,Pij.subtract(cameraLocation));
     }
 }

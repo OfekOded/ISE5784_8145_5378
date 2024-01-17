@@ -59,10 +59,10 @@ public class integrationTest {
 
     int method(Intersectable obj,Camera camera,int nx,int ny) {
         int count = 0;
-        for (int j = 0; j < 3; j++) {
-            for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < nx; i++) {
+            for (int j = 0; j < ny; j++) {
                 List<Point> inter = obj.findIntersections(camera.constructRay(nx, ny, j, i));
-                if (inter != null) count = inter.size();
+                if (inter != null) count += inter.size();
             }
         }
         return count;
