@@ -47,6 +47,8 @@ public class integrationTest {
         assertEquals(9,method(plane2,camera1,3,3),"");
         Plane plane3=new Plane(pointA,pointB,new Point(2,0,4));
         assertEquals(6,method(plane3,camera1,3,3),"");
+        Plane plane4=new Plane(new Point(2,2,2),new Point(0,2,2),new Point(0,0,2));
+        assertEquals(0,method(plane4,camera1,3,3),"");
     }
 
     @Test
@@ -55,6 +57,10 @@ public class integrationTest {
         assertEquals(1,method(triangle1,camera1,3,3));
         Triangle triangle2=new Triangle(pointC,pointD,new Point(0, 20, -2));
         assertEquals(2,method(triangle2,camera1,3,3),"");
+        Triangle triangle3=new Triangle(new Point(0, 1, -2),new Point(0.5,0,-2),new Point(-0.5,0,-2)); //על צלע
+        assertEquals(0,method(triangle3,camera1,3,3),"");
+        Triangle triangle4=new Triangle(new Point(0,0,-2),new Point(0.5,1,-2),new Point(-0.5,1,-2)); // על קודקוד
+        assertEquals(0,method(triangle4,camera1,3,3),"");
     }
 
     int method(Intersectable obj,Camera camera,int nx,int ny) {
