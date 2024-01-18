@@ -83,9 +83,24 @@ public class Polygon implements Geometry {
 
     }
 
+    /**
+     * Gets the normal vector of the convex polygon at a given point. Since the convex polygon lies on a plane,
+     * the normal vector is the same as the normal vector of the plane containing the polygon.
+     *
+     * @param point The point on the convex polygon for which the normal vector is calculated.
+     * @return The normal vector of the convex polygon at the specified point.
+     */
     @Override
-    public Vector getNormal(Point point) { return plane.getNormal(); }
+    public Vector getNormal(Point point) {
+        return plane.getNormal();
+    }
 
+    /**
+     * Finds intersection points between the convex polygon and a given ray.
+     *
+     * @param ray The ray to intersect with the convex polygon.
+     * @return A list of intersection points with the convex polygon, or null if there are no intersections.
+     */
     @Override
     public List<Point> findIntersections(Ray ray) {
         // Find intersections with the plane containing the polygon.
@@ -120,4 +135,5 @@ public class Polygon implements Geometry {
         // If the signs are inconsistent, return null.
         return null;
     }
+
 }
