@@ -1,5 +1,6 @@
 package geometries;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static primitives.Util.isZero;
@@ -87,21 +88,36 @@ public class Polygon implements Geometry {
 
     @Override
     public List<Point> findIntersections(Ray ray) {
-        // If the ray doesn't intersect the plane of the polygon, return null
-        if (plane.findIntersections(ray) == null)
+        // Find intersections with the plane containing the polygon.
+        List<Point> intersectionPoint = plane.findIntersections(ray);
+
+        // If there are no intersections with the plane, return null.
+        if (intersectionPoint == null)
             return null;
-        int i=1;
-        Vector v1 = vertices.getFirst().subtract(ray.getHead());
-        Vector v2 = vertices.get(1).subtract(ray.getHead());
-        Vector n1 = v1.crossProduct(v2).normalize();
-        double sign= ray.getDirection().dotProduct(n1);
-        while (i< size) {
-            if(!Util.compareSign(sign,vertices.get(i).subtract(ray.getHead()).crossProduct(vertices.get((i+1)%size).subtract(ray.getHead())).dotProduct(ray.getDirection())))
-            {
-                return null;
-            }
-            i++;
-        }
-        return plane.findIntersections(ray);
+
+        // Create a list to store vectors from the ray's head to each vertex of the polygon.
+        List<Vector> vectorsList = new LinkedList<>();
+        for (Point vertex : vertices)
+            vectorsList.add(vertex.subtract(ray.getHead()));
+
+        // Create a list to store normals of the edges formed by consecutive vectors.
+        List<Vector> normals = new LinkedList<>();
+        for (int i = 0; i < vectorsList.size(); i++)
+            normals.add(vectorsList.get(i).crossProduct(vectorsList.get((i + 1) % vectorsList.size())));
+
+        // Initialize a flag to check if all normals have the same sign with respect to the ray's direction.
+        boolean flag = true;
+
+        // Check the sign consistency of the dot products between each normal and the ray's direction.
+        for (int i = 0; i < normals.size(); i++)
+            if (!Util.compareSign(normals.get(i).dotProduct(ray.getDirection()), normals.get((i + 1) % normals.size()).dotProduct(ray.getDirection())))
+                flag = false;
+
+        // If all dot products have the same sign, return the intersection points.
+        if (flag)
+            return intersectionPoint;
+
+        // If the signs are inconsistent, return null.
+        return null;
     }
 }

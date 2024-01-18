@@ -37,10 +37,10 @@ public class Triangle extends Polygon {
     @Override
     public List<Point> findIntersections(Ray ray) {
         // Find intersections with the plane containing the polygon.
-        List<Point> Intersection = plane.findIntersections(ray);
+        List<Point> intersectionPoint = plane.findIntersections(ray);
 
         // If there are no intersections with the plane, return null.
-        if (Intersection == null)
+        if (intersectionPoint == null)
             return null;
 
         // Create a list to store vectors from the ray's head to each vertex of the polygon.
@@ -50,20 +50,20 @@ public class Triangle extends Polygon {
 
         // Create a list to store normals of the edges formed by consecutive vectors.
         List<Vector> normals = new LinkedList<>();
-        for (int i = 0; i < vectorsList.size(); i++)
+        for (int i = 0; i < 3; i++)
             normals.add(vectorsList.get(i).crossProduct(vectorsList.get((i + 1) % vectorsList.size())));
 
         // Initialize a flag to check if all normals have the same sign with respect to the ray's direction.
         boolean flag = true;
 
         // Check the sign consistency of the dot products between each normal and the ray's direction.
-        for (int i = 0; i < normals.size(); i++)
+        for (int i = 0; i < 3; i++)
             if (!Util.compareSign(normals.get(i).dotProduct(ray.getDirection()), normals.get((i + 1) % normals.size()).dotProduct(ray.getDirection())))
                 flag = false;
 
         // If all dot products have the same sign, return the intersection points.
         if (flag)
-            return Intersection;
+            return intersectionPoint;
 
         // If the signs are inconsistent, return null.
         return null;
