@@ -23,6 +23,7 @@ public class Camera implements Cloneable {
     private double width = 0;
     private double VpDistance = 0;
 
+
     /**
      * The Builder class for constructing a Camera object.
      */
