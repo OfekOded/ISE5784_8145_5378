@@ -1,8 +1,10 @@
 package renderer;
 
+import primitives.Color;
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
+import scene.Scene;
 
 import java.util.MissingResourceException;
 
@@ -22,13 +24,15 @@ public class Camera implements Cloneable {
     private double height = 0;
     private double width = 0;
     private double VpDistance = 0;
-
+    private ImageWriter imageWriter;
+    private RayTracerBase rayTracer;
 
     /**
      * The Builder class for constructing a Camera object.
      */
     public static class Builder {
         final private Camera camera = new Camera();
+        private Point Pto = null;
 
         /**
          * Sets the location of the camera.
@@ -56,6 +60,22 @@ public class Camera implements Cloneable {
                 return this;
             }
             throw new IllegalArgumentException("The input of the vto,vup variable is incorrect");
+        }
+
+        public Builder setDirection(Point Pto, Vector vup) {
+            camera.Vup = vup;
+            this.Pto = Pto;
+            return this;
+        }
+
+        public Builder setImageWriter(ImageWriter ImageWriter) {
+            camera.imageWriter = ImageWriter;
+            return this;
+        }
+
+        public Builder setRayTracer(RayTracerBase RayTracerBase) {
+            camera.rayTracer = RayTracerBase;
+            return this;
         }
 
         /**
@@ -102,6 +122,8 @@ public class Camera implements Cloneable {
          */
         public Camera build() {
             String ERROR = "Missing rendering data";
+            if (Pto == null && camera.Vto == null)
+                throw new MissingResourceException(ERROR, "Camera", "Vto/Pto");
             if (isZero(camera.height))
                 throw new MissingResourceException(ERROR, "Camera", "height");
             if (isZero(camera.width))
@@ -114,7 +136,16 @@ public class Camera implements Cloneable {
                 throw new IllegalArgumentException("The input of the height variable is incorrect");
             if (camera.width < 0)
                 throw new IllegalArgumentException("The input of the width variable is incorrect");
-            this.camera.Vright = camera.Vup.crossProduct(camera.Vto).normalize();
+            if (camera.rayTracer == null)
+                throw new MissingResourceException(ERROR, "Camera", "rayTracer");
+            if (camera.imageWriter == null)
+                throw new MissingResourceException(ERROR, "Camera", "imageWriter");
+            if (Pto != null) {
+                if (Pto.equals(Point.ZERO))
+                    throw new IllegalArgumentException("must be different");
+                this.camera.Vright = camera.Vup.crossProduct(Pto.subtract(camera.cameraLocation)).normalize();
+            } else
+                this.camera.Vright = camera.Vup.crossProduct(camera.Vto).normalize();
             try {
                 return (Camera) camera.clone();
             } catch (CloneNotSupportedException e) {
@@ -212,8 +243,8 @@ public class Camera implements Cloneable {
      *
      * @param nX The total number of pixels in the X direction.
      * @param nY The total number of pixels in the Y direction.
-     * @param j       The pixel's X coordinate.
-     * @param i       The pixel's Y coordinate.
+     * @param j  The pixel's X coordinate.
+     * @param i  The pixel's Y coordinate.
      * @return The constructed ray for the specified pixel.
      */
     public Ray constructRay(int nX, int nY, int j, int i) {
@@ -243,4 +274,28 @@ public class Camera implements Cloneable {
         return new Ray(cameraLocation, pixelPoint.subtract(cameraLocation));
     }
 
+    public Camera renderImage() {
+        for (int i = 0; i < imageWriter.getNx(); i++)
+            for (int j = 0; j < imageWriter.getNy(); j++){
+                this.castRay(imageWriter.getNx(),imageWriter.getNy(),i,j);}
+        //throw new UnsupportedOperationException();
+        return this;
+    }
+
+    public Camera printGrid(int interval, Color color) {
+        for (int i = 0; i < imageWriter.getNx(); i++) {
+            for (int j = 0; j < imageWriter.getNy(); j++) {
+                if (i % interval == 0 || i == imageWriter.getNx() - 1 || j % interval == 0 || j == imageWriter.getNy() - 1)
+                    imageWriter.writePixel(i, j, color);
+            }
+        }
+        return this;
+    }
+
+    public void writeToImage() {
+        imageWriter.writeToImage();
+    }
+    private void castRay(int Nx,int Ny,int i,int j){
+        imageWriter.writePixel(i,j,rayTracer.traceRay(constructRay(Nx,Ny,i,j)));
+    }
 }
