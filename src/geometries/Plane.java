@@ -15,7 +15,7 @@ import static primitives.Util.isZero;
 /**
  * The Plane class represents a flat surface in three-dimensional space.
  */
-public class Plane implements Geometry {
+public class Plane extends Geometry {
 
     /**
      * A reference point located within the plane.
@@ -87,7 +87,7 @@ public class Plane implements Geometry {
      * @return A list of intersection points with the plane or null if there are no intersections.
      */
     @Override
-    public List<Point> findIntersections(Ray ray) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         // Check if the ray is parallel or almost parallel to the plane
         if (isZero(normal.dotProduct(ray.getDirection())))
             return null;
@@ -100,7 +100,7 @@ public class Plane implements Geometry {
             return null;
 
         // Return a list containing the intersection point
-        return List.of(ray.getPoint(t));
+        return List.of(new GeoPoint(this,ray.getPoint(t)));
     }
 
 }

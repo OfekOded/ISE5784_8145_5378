@@ -12,11 +12,11 @@ import java.util.List;
  * Represents a collection of geometric objects that implement the Intersectable interface.
  * This class provides methods for adding intersectable geometries and finding intersections with a given ray.
  */
-public class Geometries implements Intersectable {
+public class Geometries extends Intersectable {
     /**
      * The list of intersectable geometries in this collection.
      */
-    private final List<Intersectable> list = new LinkedList<>();
+    private final List<Intersectable> geometries = new LinkedList<>();
 
     /**
      * Constructs an empty Geometries object.
@@ -40,7 +40,7 @@ public class Geometries implements Intersectable {
      * @param geometries The intersectable geometries to add.
      */
     public void add(Intersectable... geometries) {
-        Collections.addAll(list, geometries);
+        Collections.addAll(this.geometries, geometries);
     }
 
     /**
@@ -50,19 +50,19 @@ public class Geometries implements Intersectable {
      * @return A list of intersection points, or null if there are no intersections.
      */
     @Override
-    public List<Point> findIntersections(Ray ray) {
-        List<Point> intersectionsPoints = null;
-        for (Intersectable intersectable : list) {
-            if (intersectable.findIntersections(ray) != null) {
-                for (Point points : intersectable.findIntersections(ray)) {
-                    if (intersectionsPoints == null)
-                        intersectionsPoints = new LinkedList<>();
-                    intersectionsPoints.add(points);
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray){
+        List<GeoPoint> intersections = null;
+        for (Intersectable intersectable : geometries) {
+            if (intersectable.findGeoIntersectionsHelper(ray) != null) {
+                for (GeoPoint geoPoints : intersectable.findGeoIntersectionsHelper(ray)) {
+                    if (intersections == null)
+                        intersections = new LinkedList<>();
+                    intersections.add(geoPoints);
                 }
             }
         }
-        if (intersectionsPoints != null)
-            intersectionsPoints = intersectionsPoints.stream().sorted(Comparator.comparingDouble(p -> p.distance(ray.getHead()))).toList();
-        return intersectionsPoints;
+        if (intersections != null)
+            intersections.stream().sorted(Comparator.comparingDouble(p -> p.point.distance(ray.getHead()))).toList();
+        return intersections;
     }
 }

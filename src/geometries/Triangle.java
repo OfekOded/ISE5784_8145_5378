@@ -35,14 +35,14 @@ public class Triangle extends Polygon {
      * @return A list of intersection points if they exist, or null if no intersections are found.
      */
     @Override
-    public List<Point> findIntersections(Ray ray) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray){
         // Find intersections with the plane containing the polygon.
         List<Point> intersectionPoint = plane.findIntersections(ray);
 
         // If there are no intersections with the plane, return null.
         if (intersectionPoint == null)
             return null;
-
+        Point point=intersectionPoint.getFirst();
         // Create a list to store vectors from the ray's head to each vertex of the polygon.
         List<Vector> vectorsList = new LinkedList<>();
         for (Point vertex : vertices)
@@ -63,7 +63,7 @@ public class Triangle extends Polygon {
 
         // If all dot products have the same sign, return the intersection points.
         if (flag)
-            return intersectionPoint;
+            return List.of(new GeoPoint(this, point));
 
         // If the signs are inconsistent, return null.
         return null;

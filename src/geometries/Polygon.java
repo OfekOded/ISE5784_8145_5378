@@ -15,7 +15,7 @@ import primitives.Vector;
  * system
  * @author Dan
  */
-public class Polygon implements Geometry {
+public class Polygon extends Geometry {
     /** List of polygon's vertices */
     protected final List<Point> vertices;
     /** Associated plane in which the polygon lays */
@@ -102,7 +102,7 @@ public class Polygon implements Geometry {
      * @return A list of intersection points with the convex polygon, or null if there are no intersections.
      */
     @Override
-    public List<Point> findIntersections(Ray ray) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray){
         // Find intersections with the plane containing the polygon.
         List<Point> intersectionPoint = plane.findIntersections(ray);
 
@@ -130,7 +130,7 @@ public class Polygon implements Geometry {
 
         // If all dot products have the same sign, return the intersection points.
         if (flag)
-            return intersectionPoint;
+            return List.of(new GeoPoint(this,intersectionPoint.getFirst()));
 
         // If the signs are inconsistent, return null.
         return null;

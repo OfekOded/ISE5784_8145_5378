@@ -55,10 +55,10 @@ public class Sphere extends RadialGeometry {
      * @return A list of intersection points with the sphere or null if there are no intersections.
      */
     @Override
-    public List<Point> findIntersections(Ray ray) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         // Special case: Ray starts from the center of the sphere
         if (center.equals(ray.getHead()))
-            return List.of(ray.getPoint(radius));
+            return List.of(new GeoPoint(this, ray.getPoint(radius)));
 
         // Calculate vector 'u' connecting the center of the sphere to the camera
         Vector u = center.subtract(ray.getHead());
@@ -82,11 +82,14 @@ public class Sphere extends RadialGeometry {
 
         // Check for valid intersection points
         if ((t1 < 0 || isZero(t1)) && t2 > 0)
-            return List.of(ray.getPoint(t2));
+            return List.of(new GeoPoint(this, ray.getPoint(t2)));
         else if (t2 > 0) {
             Point point1 = ray.getPoint(t1);
             Point point2 = ray.getPoint(t2);
-            return List.of(point1, point2).stream().sorted(Comparator.comparingDouble(p ->p.distance(ray.getHead()))).toList();
+            if (point1.distance(ray.getHead()) < point2.distance(ray.getHead()))
+               return List.of(new GeoPoint(this,point1));
+            else
+                return List.of(new GeoPoint(this,point2));
         }
         // No valid intersection points
         return null;
