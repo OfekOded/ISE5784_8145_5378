@@ -194,4 +194,83 @@ public class LightsTests {
                 .writeToImage();
     }
 
+    /** Produce a picture of a red ball illuminated by different types of lights */
+    @Test
+    public void redBallAllLights() {
+        // Create a red-colored ball
+        Geometry redBall = new Sphere(50, new Point(0, 0, -50))
+                .setEmission(new Color(RED))
+                .setMaterial(new Material().setkD(0.5).setkS(0.5).setShininess(100));
+
+        // Create the scene
+        Scene scene = new Scene("Red Ball Scene")
+                .setAmbientLight(new AmbientLight(new Color(WHITE), new Double3(0.15)));
+        scene.geometries.add(redBall);
+
+        // Add different types of lights to the scene
+        scene.lights.add(new DirectionalLight(new Color(WHITE), new Vector(1, 1, -1)));
+        scene.lights.add(new PointLight(new Color(WHITE), new Point(50, 50, 0)).setkL(0.001).setkQ(0.0002));
+        scene.lights.add(new SpotLight(new Color(WHITE), new Point(-50, -50, 25), new Vector(1, 1, -0.5))
+                .setkL(0.001).setkQ(0.0001));
+
+        // Set up the camera
+        Camera.Builder cameraBuilder = Camera.getBuilder()
+                .setRayTracer(new SimpleRayTracer(scene))
+                .setCameraLocation(new Point(0, 0, 1000))
+                .setDirection(Point.ZERO, new Vector(0, 1, 0))
+                .setVpSize(200, 200).setVpDistance(1000);
+
+        // Render the image and write to file
+        cameraBuilder.setImageWriter(new ImageWriter("redBallAllLights", 500, 500))
+                .build()
+                .renderImage()
+                .writeToImage();
+    }
+    /** Produce a picture of two triangles illuminated by different types of lights */
+    @Test
+    public void trianglesAllLights() {
+        // Define vertices for two triangles
+        Point[] vertices =
+                {
+                        // the shared left-bottom:
+                        new Point(-110, -110, -150),
+                        // the shared right-top:
+                        new Point(95, 100, -150),
+                        // the right-bottom
+                        new Point(110, -110, -150),
+                        // the left-top
+                        new Point(-75, 78, 100)
+                };
+
+        // Create two triangles
+        Geometry triangle1 = new Triangle(vertices[0], vertices[1], vertices[2])
+                .setMaterial(new Material().setkD(0.5).setkS(0.5).setShininess(100));
+        Geometry triangle2 = new Triangle(vertices[0], vertices[1], vertices[3])
+                .setMaterial(new Material().setkD(0.5).setkS(0.5).setShininess(100));
+
+        // Create the scene
+        Scene scene = new Scene("Triangles Scene")
+                .setAmbientLight(new AmbientLight(new Color(WHITE), new Double3(0.15)));
+        scene.geometries.add(triangle1, triangle2);
+
+        // Add different types of lights to the scene
+        scene.lights.add(new DirectionalLight(new Color(WHITE), new Vector(1, 1, -1)));
+        scene.lights.add(new PointLight(new Color(WHITE), new Point(0, 0, 50)).setkL(0.001).setkQ(0.0002));
+        scene.lights.add(new SpotLight(new Color(WHITE), new Point(0, 0, 50), new Vector(0, 0, -1))
+                .setkL(0.001).setkQ(0.0001));
+
+        // Set up the camera
+        Camera.Builder cameraBuilder = Camera.getBuilder()
+                .setRayTracer(new SimpleRayTracer(scene))
+                .setCameraLocation(new Point(0, 0, 1000))
+                .setDirection(Point.ZERO, new Vector(0, 1, 0))
+                .setVpSize(200, 200).setVpDistance(1000);
+
+        // Render the image and write to file
+        cameraBuilder.setImageWriter(new ImageWriter("trianglesAllLights", 500, 500))
+                .build()
+                .renderImage()
+                .writeToImage();
+    }
+
 }
