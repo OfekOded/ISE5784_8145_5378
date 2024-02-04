@@ -106,22 +106,21 @@ public class PolygonTest {
 
         Point Vertex2 = new Point(2, 0, 0);
 
-        Point Vertex3 = new Point(0, 0, 1);
+        Point Vertex8 = new Point(0, 0, 1);
 
-        Point Vertex4 = new Point(0, 0, 2);
+        Point Vertex7 = new Point(0, 0, 2);
 
-        Point Vertex5 = new Point(1, 0, 3);
+        Point Vertex6 = new Point(1, 0, 3);
 
-        Point Vertex6 = new Point(2, 0, 3);
+        Point Vertex5 = new Point(2, 0, 3);
 
-        Point Vertex7 = new Point(3, 0, 2);
+        Point Vertex4 = new Point(3, 0, 2);
 
-        Point Vertex8 = new Point(3, 0, 1);
+        Point Vertex3 = new Point(3, 0, 1);
 
         Point head = new Point(1, -2, 0);
 
-        List<Point> pointList = List.of(Vertex1, Vertex2, Vertex3, Vertex4, Vertex5, Vertex6, Vertex7, Vertex8);
-        Polygon polygon = new Polygon((Point) pointList);
+        Polygon polygon = new Polygon(Vertex1, Vertex2, Vertex3, Vertex4, Vertex5, Vertex6, Vertex7, Vertex8);
         // ============ Equivalence Partitions Tests ==============
         //TC01: The point inside the polygon
         final var result1 = polygon.findIntersections(new Ray(head, new Vector(0, 2, 1))).stream().toList();
@@ -135,14 +134,10 @@ public class PolygonTest {
 
         // =============== Boundary Values Tests ==================
         //TC11: The point on the side
-        final var result2 = polygon.findIntersections(new Ray(head, new Vector(-4, 0, -4))).stream().toList();
-        assertEquals(1, result2.size(), "ERROR: when the point on the side");
-        assertEquals(List.of(new Point(-4, 0, 0)), result2, "ERROR: when the point on the side");
+        assertNull(polygon.findIntersections(new Ray(head, new Vector(-4, 0, -4))),"ERROR: when the point on the side");
 
         //TC12: The point is on a vertex
-        final var result3 = polygon.findIntersections(new Ray(head, new Vector(-4, -3, -4))).stream().toList();
-        assertEquals(1, result3.size(), "ERROR: when the point is on a vertex");
-        assertEquals(List.of(Vertex3), result3, "ERROR: when the point is on a vertex");
+        assertNull(polygon.findIntersections(new Ray(head, new Vector(-4, -3, -4))),"ERROR: when the point is on a vertex");
 
         //TC13: The point on the continuation of the side
         assertNull(polygon.findIntersections(new Ray(head, new Vector(-3, -4.5, -4))), "ERROR: when the point on the continuation of the side");

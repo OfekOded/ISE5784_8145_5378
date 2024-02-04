@@ -65,6 +65,7 @@ public class Camera implements Cloneable {
         public Builder setDirection(Point Pto, Vector vup) {
             camera.Vup = vup;
             this.Pto = Pto;
+            camera.Vto = Pto.subtract(camera.cameraLocation).normalize();
             return this;
         }
 
@@ -141,8 +142,9 @@ public class Camera implements Cloneable {
             if (camera.imageWriter == null)
                 throw new MissingResourceException(ERROR, "Camera", "imageWriter");
             if (Pto != null) {
-                if (Pto.equals(Point.ZERO))
+                if (Pto.equals(camera.cameraLocation))
                     throw new IllegalArgumentException("must be different");
+
                 this.camera.Vright = camera.Vup.crossProduct(Pto.subtract(camera.cameraLocation)).normalize();
             } else
                 this.camera.Vright = camera.Vup.crossProduct(camera.Vto).normalize();
@@ -155,7 +157,8 @@ public class Camera implements Cloneable {
     }
 
     // Private constructor to enforce the use of the Builder pattern.
-    private Camera() {}
+    private Camera() {
+    }
 
     /**
      * Gets the height of the camera's view.
@@ -270,14 +273,14 @@ public class Camera implements Cloneable {
             pixelPoint = imageCenter.add(Vright.scale(xOffset));
         else
             pixelPoint = imageCenter.add(Vright.scale(xOffset).add(Vup.scale(yOffset)));
-
         return new Ray(cameraLocation, pixelPoint.subtract(cameraLocation));
     }
 
     public Camera renderImage() {
         for (int i = 0; i < imageWriter.getNx(); i++)
-            for (int j = 0; j < imageWriter.getNy(); j++){
-                this.castRay(imageWriter.getNx(),imageWriter.getNy(),i,j);}
+            for (int j = 0; j < imageWriter.getNy(); j++) {
+                this.castRay(imageWriter.getNx(), imageWriter.getNy(), i, j);
+            }
         //throw new UnsupportedOperationException();
         return this;
     }
@@ -295,7 +298,8 @@ public class Camera implements Cloneable {
     public void writeToImage() {
         imageWriter.writeToImage();
     }
-    private void castRay(int Nx,int Ny,int i,int j){
-        imageWriter.writePixel(i,j,rayTracer.traceRay(constructRay(Nx,Ny,i,j)));
+
+    private void castRay(int Nx, int Ny, int i, int j) {
+        imageWriter.writePixel(i, j, rayTracer.traceRay(constructRay(Nx, Ny, i, j)));
     }
 }

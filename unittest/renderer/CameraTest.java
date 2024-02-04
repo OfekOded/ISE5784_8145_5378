@@ -19,7 +19,7 @@ class CameraTest {
             .setRayTracer(new SimpleRayTracer(new Scene("Test")))
             .setImageWriter(new ImageWriter("Test", 1, 1))
             .setCameraLocation(Point.ZERO)
-            .setDirection(new Vector(0, 0, -1), new Vector(0, -1, 0))
+            .setDirection(new Point(0, 0, -1), new Vector(0, -1, 0))
             .setVpDistance(10);
 
     /**
@@ -34,7 +34,7 @@ class CameraTest {
         // EP01: 4X4 Inside (1,1)
         Camera camera1 = cameraBuilder.setVpSize(8, 8).build();
         assertEquals(new Ray(Point.ZERO, new Vector(1, -1, -10)),
-                camera1.constructRay(4, 4, 1, 1), badRay);
+               camera1.constructRay(4, 4, 1, 1), badRay);
 
         // =============== Boundary Values Tests ==================
         // BV01: 4X4 Corner (0,0)

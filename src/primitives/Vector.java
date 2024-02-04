@@ -110,4 +110,10 @@ public class Vector extends Point {
     public String toString() {
         return "Vector{}";
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this==obj)return true;
+        return obj instanceof Vector other && super.equals(other);
+    }
 }
