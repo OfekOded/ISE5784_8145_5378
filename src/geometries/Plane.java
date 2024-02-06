@@ -80,11 +80,10 @@ public class Plane extends Geometry {
     }
 
     /**
-     * Finds the intersection points between the given ray and the plane.
-     * Returns a list of intersection points or null if there are no intersections.
+     * Finds the intersection points between the plane and a given ray.
      *
      * @param ray The ray for which intersections are to be found.
-     * @return A list of intersection points with the plane or null if there are no intersections.
+     * @return A list of GeoPoint objects representing the intersection points and the plane.
      */
     @Override
     protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
@@ -100,7 +99,6 @@ public class Plane extends Geometry {
             return null;
 
         // Return a list containing the intersection point
-        return List.of(new GeoPoint(this,ray.getPoint(t)));
+        return List.of(new GeoPoint(this, ray.getPoint(t)));
     }
-
 }

@@ -68,4 +68,5 @@ public class Triangle extends Polygon {
         // If the signs are inconsistent, return null.
         return null;
     }
+
 }

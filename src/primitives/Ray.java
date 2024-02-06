@@ -1,5 +1,5 @@
 package primitives;
-import geometries.Intersectable.GeoPoint;
+
 import geometries.Intersectable.GeoPoint;
 import java.util.Comparator;
 import java.util.List;
@@ -18,7 +18,7 @@ public class Ray {
     final private Point head;
 
     /**
-     * The variable stores the direction of the ray, the variable is of vector type.
+     * The variable stores the direction of the ray; the variable is of vector type.
      */
     final private Vector direction;
 
@@ -26,12 +26,12 @@ public class Ray {
      * Constructs a new Ray object with the given head point and direction vector.
      * The direction vector is normalized during construction.
      *
-     * @param point The head point of the ray.
-     * @param vector The direction vector of the ray.
+     * @param head The head point of the ray.
+     * @param direction The direction vector of the ray.
      */
-    public Ray(Point point, Vector vector) {
-        this.head = point;
-        this.direction = vector.normalize();
+    public Ray(Point head, Vector direction) {
+        this.head = head;
+        this.direction = direction.normalize();
     }
 
     /**
@@ -59,31 +59,50 @@ public class Ray {
      * @return A point along the ray at the specified parameter value.
      */
     public Point getPoint(double t) {
-        if(isZero(t))
+        if (isZero(t))
             return head;
         return head.add(direction.scale(t));
     }
 
+    /**
+     * Finds and returns the closest point from a list of points to the ray's head.
+     *
+     * @param points The list of points to find the closest one.
+     * @return The closest point to the ray's head.
+     */
     public Point findClosestPoint(List<Point> points) {
         return points == null || points.isEmpty() ? null
                 : findClosestGeoPoint(points.stream().map(p -> new GeoPoint(null, p)).toList()).point;
     }
 
+    /**
+     * Finds and returns the closest GeoPoint from a list of GeoPoints to the ray's head.
+     *
+     * @param intersections The list of GeoPoints to find the closest one.
+     * @return The closest GeoPoint to the ray's head.
+     */
+    public GeoPoint findClosestGeoPoint(List<GeoPoint> intersections) {
+        GeoPoint closestGeoPoint = intersections.isEmpty() ? null : intersections.get(0);
 
-    public GeoPoint findClosestGeoPoint(List<GeoPoint> intersections){
-        GeoPoint closestGeoPoint=intersections.getFirst();
-        for(GeoPoint geoPoint :intersections){
-            if(geoPoint.point.distance(head)<closestGeoPoint.point.distance(head))
-                closestGeoPoint=geoPoint;
+        for (GeoPoint geoPoint : intersections) {
+            if (geoPoint.point.distance(head) < closestGeoPoint.point.distance(head))
+                closestGeoPoint = geoPoint;
         }
+
         return closestGeoPoint;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if(!(o instanceof Ray ray)) return false;
+        if (!(o instanceof Ray)) return false;
+        Ray ray = (Ray) o;
         return Objects.equals(head, ray.head) && Objects.equals(direction, ray.direction);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(head, direction);
     }
 
     @Override

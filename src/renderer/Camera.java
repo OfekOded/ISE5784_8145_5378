@@ -62,6 +62,12 @@ public class Camera implements Cloneable {
             throw new IllegalArgumentException("The input of the vto,vup variable is incorrect");
         }
 
+        /**
+         * Set the direction of the camera
+         * @param Pto
+         * @param vup
+         * @return this object according to the builder design pattern
+         */
         public Builder setDirection(Point Pto, Vector vup) {
             camera.Vup = vup;
             this.Pto = Pto;
@@ -69,11 +75,21 @@ public class Camera implements Cloneable {
             return this;
         }
 
+        /**
+         * Set the ImageWriter of the object camera
+         * @param ImageWriter
+         * @return this object according to the builder design pattern
+         */
         public Builder setImageWriter(ImageWriter ImageWriter) {
             camera.imageWriter = ImageWriter;
             return this;
         }
 
+        /**
+         * Set the RayTracerBase of the object camera
+         * @param RayTracerBase
+         * @return this object according to the builder design pattern
+         */
         public Builder setRayTracer(RayTracerBase RayTracerBase) {
             camera.rayTracer = RayTracerBase;
             return this;
@@ -276,15 +292,27 @@ public class Camera implements Cloneable {
         return new Ray(cameraLocation, pixelPoint.subtract(cameraLocation));
     }
 
+    /**
+     * Renders the image by casting rays for each pixel and tracing them through the scene.
+     *
+     * @return This Camera instance after rendering the image.
+     */
     public Camera renderImage() {
-        for (int i = 0; i < imageWriter.getNx(); i++)
+        for (int i = 0; i < imageWriter.getNx(); i++) {
             for (int j = 0; j < imageWriter.getNy(); j++) {
                 this.castRay(imageWriter.getNx(), imageWriter.getNy(), i, j);
             }
-        //throw new UnsupportedOperationException();
+        }
         return this;
     }
 
+    /**
+     * Prints a grid on the image to visualize pixel alignment.
+     *
+     * @param interval The interval between grid lines.
+     * @param color    The color of the grid lines.
+     * @return This Camera instance after printing the grid.
+     */
     public Camera printGrid(int interval, Color color) {
         for (int i = 0; i < imageWriter.getNx(); i++) {
             for (int j = 0; j < imageWriter.getNy(); j++) {
@@ -295,11 +323,23 @@ public class Camera implements Cloneable {
         return this;
     }
 
+    /**
+     * Writes the rendered image to a file.
+     */
     public void writeToImage() {
         imageWriter.writeToImage();
     }
 
+    /**
+     * Casts a ray for a given pixel in the image and traces it through the scene.
+     *
+     * @param Nx The total number of pixels in the X direction.
+     * @param Ny The total number of pixels in the Y direction.
+     * @param i  The pixel's X coordinate.
+     * @param j  The pixel's Y coordinate.
+     */
     private void castRay(int Nx, int Ny, int i, int j) {
         imageWriter.writePixel(i, j, rayTracer.traceRay(constructRay(Nx, Ny, i, j)));
     }
+
 }

@@ -96,10 +96,10 @@ public class Polygon extends Geometry {
     }
 
     /**
-     * Finds intersection points between the convex polygon and a given ray.
+     * Finds the intersection points between the polygon and a given ray.
      *
-     * @param ray The ray to intersect with the convex polygon.
-     * @return A list of intersection points with the convex polygon, or null if there are no intersections.
+     * @param ray The ray for which intersections are to be found.
+     * @return A list of GeoPoint objects representing the intersection points and the polygon.
      */
     @Override
     protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray){

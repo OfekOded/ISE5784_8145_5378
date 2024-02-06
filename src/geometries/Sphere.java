@@ -87,11 +87,12 @@ public class Sphere extends RadialGeometry {
             Point point1 = ray.getPoint(t1);
             Point point2 = ray.getPoint(t2);
             if (point1.distance(ray.getHead()) < point2.distance(ray.getHead()))
-               return List.of(new GeoPoint(this,point1),new GeoPoint(this,point2));
+                return List.of(new GeoPoint(this, point1), new GeoPoint(this, point2));
             else
-                return List.of(new GeoPoint(this,point2),new GeoPoint(this,point1));
+                return List.of(new GeoPoint(this, point2), new GeoPoint(this, point1));
         }
         // No valid intersection points
         return null;
     }
+
 }

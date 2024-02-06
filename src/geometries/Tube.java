@@ -56,11 +56,10 @@ public class Tube extends RadialGeometry {
 
     /**
      * This method is overridden from the Intersectable interface.
-     * It returns null, indicating that there are no intersection points
-     * between the given ray and the object implementing this method.
+     * It returns null, Because I chose not to exercise it
      *
      * @param ray The ray to find intersections with.
-     * @return Always returns null since this object does not have intersections with the given ray.
+     * @return Always returns null.
      */
     @Override
     protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
