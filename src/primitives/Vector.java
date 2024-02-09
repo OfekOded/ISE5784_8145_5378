@@ -17,7 +17,8 @@ public class Vector extends Point {
      */
     public Vector(double x, double y, double z) {
         super(x, y, z);
-        if (xyz.equals(Double3.ZERO)) throw new IllegalArgumentException("IllegalArgumentException");
+        if (xyz.equals(Double3.ZERO))
+            throw new IllegalArgumentException("IllegalArgumentException");
     }
 
     /**
@@ -29,7 +30,8 @@ public class Vector extends Point {
      */
     public Vector(Double3 d3) {
         super(d3);
-        if (d3.equals(Double3.ZERO)) throw new IllegalArgumentException("IllegalArgumentException");
+        if (d3.equals(Double3.ZERO))
+            throw new IllegalArgumentException("IllegalArgumentException");
     }
 
     /**

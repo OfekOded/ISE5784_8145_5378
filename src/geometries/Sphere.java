@@ -12,6 +12,7 @@ import javax.management.openmbean.OpenMBeanOperationInfo;
 import java.util.Comparator;
 import java.util.List;
 
+import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
 /**
@@ -77,11 +78,11 @@ public class Sphere extends RadialGeometry {
         double th = Math.sqrt(radius * radius - d * d);
 
         // Calculate intersection parameters
-        double t1 = tm - th;
-        double t2 = tm + th;
+        double t1 = alignZero(tm - th);
+        double t2 = alignZero(tm + th);
 
         // Check for valid intersection points
-        if ((t1 < 0 || isZero(t1)) && t2 > 0)
+        if ((t1 < 0 || isZero(t1)) && t2 > 0 )
             return List.of(new GeoPoint(this, ray.getPoint(t2)));
         else if (t2 > 0) {
             Point point1 = ray.getPoint(t1);
