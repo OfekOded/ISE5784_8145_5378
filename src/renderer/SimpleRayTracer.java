@@ -10,13 +10,15 @@ import java.util.List;
 import static java.lang.Math.pow;
 import static primitives.Util.alignZero;
 
+
 /**
  * A simple ray tracer implementation that computes the color of intersection points in a scene.
  *
  * <p>This ray tracer calculates local lighting effects, such as diffuse and specular reflections, for each intersection point.</p>
  */
 public class SimpleRayTracer extends RayTracerBase {
-    private static final double DELTA = 0.1;
+
+    private static final double DELTA = 0.1; //Variable for correcting an inaccuracy in the calculation of shading rays
 
     /**
      * Constructs a SimpleRayTracer with the given scene.
@@ -70,7 +72,7 @@ public class SimpleRayTracer extends RayTracerBase {
         for (LightSource lightSource : scene.lights) {
             Vector l = lightSource.getL(gp.point);
             double nl = alignZero(n.dotProduct(l));
-            if ((nl * nv > 0) && unshaded(gp, l, n)) {
+            if ((nl * nv > 0) && unshaded(gp,lightSource, l, n,nl)) {
                 Color iL = lightSource.getIntensity(gp.point);
                 color = color.add(
                         iL.scale(calcDiffusive(material, nl)
@@ -110,18 +112,20 @@ public class SimpleRayTracer extends RayTracerBase {
 
     /**
      * A boolean function that returns true if the ray is not blocked and really affects the image
-     *
      * @param gp
+     * @param light
      * @param l
      * @param n
-     * @return
+     * @param nl
+     * @return If the ray is blocked or not
      */
-    private boolean unshaded(Intersectable.GeoPoint gp, Vector l, Vector n) {
+    private boolean unshaded(Intersectable.GeoPoint gp, LightSource light, Vector l, Vector n, double nl) {
         Vector lightDirection = l.scale(-1); // from point to light source
-        Ray ray = new Ray(gp.point, lightDirection);
-        List<Intersectable.GeoPoint> intersections = scene.geometries.findGeoIntersections(ray);
-        return intersections == null;
+        Vector deltaVector = n.scale(nl < 0 ? DELTA : -DELTA);
+        Point point = gp.point.add(deltaVector);
+        Ray ray = new Ray(point, lightDirection);
+        List<Intersectable.GeoPoint> intersections = scene.geometries.findGeoIntersections(ray, light.getDistance(point));
+        if (intersections == null) return true;
+        return false;
     }
-
-    ;
 }

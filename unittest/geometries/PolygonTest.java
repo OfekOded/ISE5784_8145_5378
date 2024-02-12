@@ -27,7 +27,25 @@ public class PolygonTest {
     Point point2 = new Point(0, 1, 0);
     Point point3 = new Point(0, 0, 1);
     Point point4 = new Point(-1, 1, 1);
+    Point Vertex1 = new Point(1, 0, 0);
 
+    Point Vertex2 = new Point(2, 0, 0);
+
+    Point Vertex8 = new Point(0, 0, 1);
+
+    Point Vertex7 = new Point(0, 0, 2);
+
+    Point Vertex6 = new Point(1, 0, 3);
+
+    Point Vertex5 = new Point(2, 0, 3);
+
+    Point Vertex4 = new Point(3, 0, 2);
+
+    Point Vertex3 = new Point(3, 0, 1);
+
+    Point head = new Point(1, -2, 0);
+
+    Polygon polygon = new Polygon(Vertex1, Vertex2, Vertex3, Vertex4, Vertex5, Vertex6, Vertex7, Vertex8);
     /**
      * Test method for {@link geometries.Polygon#Polygon(primitives.Point...)}.
      */
@@ -102,25 +120,6 @@ public class PolygonTest {
 
     @Test
     void findIntersections() {
-        Point Vertex1 = new Point(1, 0, 0);
-
-        Point Vertex2 = new Point(2, 0, 0);
-
-        Point Vertex8 = new Point(0, 0, 1);
-
-        Point Vertex7 = new Point(0, 0, 2);
-
-        Point Vertex6 = new Point(1, 0, 3);
-
-        Point Vertex5 = new Point(2, 0, 3);
-
-        Point Vertex4 = new Point(3, 0, 2);
-
-        Point Vertex3 = new Point(3, 0, 1);
-
-        Point head = new Point(1, -2, 0);
-
-        Polygon polygon = new Polygon(Vertex1, Vertex2, Vertex3, Vertex4, Vertex5, Vertex6, Vertex7, Vertex8);
         // ============ Equivalence Partitions Tests ==============
         //TC01: The point inside the polygon
         final var result1 = polygon.findIntersections(new Ray(head, new Vector(0, 2, 1))).stream().toList();
@@ -142,7 +141,19 @@ public class PolygonTest {
         //TC13: The point on the continuation of the side
         assertNull(polygon.findIntersections(new Ray(head, new Vector(-3, -4.5, -4))), "ERROR: when the point on the continuation of the side");
     }
-
+    @Test
+    void testFindMaxDistanceIntersections(){
+        // ============ Equivalence Partitions Tests ==============
+        //TC01: The distance between the intersection point and the polygon is less than maxDistance
+        final var result1 = polygon.findIntersections(new Ray(head, new Vector(0, 2, 1)),100000);
+        assertEquals(1, result1.size(), "ERROR: when the ray cuts the polygon and the distance between the intersection point and the plane is less than maxDistance");
+        //TC02: The distance between the intersection point and the polygon is bigger than maxDistance
+        assertNull(polygon.findIntersections(new Ray(head, new Vector(0, 2, 1)),0.5), "ERROR: when the ray cuts the polygon and the distance between the intersection point and the plane is bigger than maxDistance");
+        // =============== Boundary Values Tests ==================
+        // TC11: The distance between the intersection point and the polygon is maxDistance
+        final var result2 = polygon.findIntersections(new Ray(head, new Vector(0, 2, 1)),2.236);
+        assertEquals(1, result1.size(), "ERROR: when the ray cuts the polygon and the distance between the intersection point and the plane is maxDistance");
+    }
 }
 
 

@@ -68,19 +68,41 @@ public abstract class Intersectable {
     }
 
     /**
+     * Finds the intersection points between the geometric object and a given ray.
+     * @param ray
+     * @param maxDistance
+     * @return A list of intersection points that are at a distance less than or equal to maxDistance
+     */
+    public List<Point> findIntersections(Ray ray,double maxDistance) {
+        var geoList = findGeoIntersections(ray,maxDistance);
+        return geoList == null ? null : geoList.stream().map(gp -> gp.point).toList();
+    }
+
+    /**
      * Finds the intersection points between the geometric object and a given ray,
      * along with the corresponding intersected geometries.
      *
      * @param ray The ray for which intersections are to be found.
      * @return A list of GeoPoint objects representing the intersection points and the intersected geometries.
      */
-    public List<GeoPoint> findGeoIntersections(Ray ray){return findGeoIntersectionsHelper(ray);}
+    public final List<GeoPoint> findGeoIntersections(Ray ray) {
+        return findGeoIntersections(ray, Double.POSITIVE_INFINITY);
+    }
 
+    /**
+     * A helper function that calls another function in order to save nvi design template
+     * @param ray
+     * @param maxDistance
+     @return A list of GeoPoint objects representing the intersection points and the intersected geometries.
+     */
+    public final List<GeoPoint> findGeoIntersections(Ray ray, double maxDistance) {
+        return findGeoIntersectionsHelper(ray, maxDistance);
+    }
     /**
      * Helper method to find the intersection points between the geometric object and a given ray.
      *
      * @param ray The ray for which intersections are to be found.
      * @return A list of GeoPoint objects representing the intersection points and the intersected geometries.
      */
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray){return null;};
+    protected abstract List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance);
 }

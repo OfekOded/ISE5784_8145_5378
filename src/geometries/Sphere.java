@@ -6,6 +6,7 @@ package geometries;
 
 import primitives.Point;
 import primitives.Ray;
+import primitives.Util;
 import primitives.Vector;
 
 import javax.management.openmbean.OpenMBeanOperationInfo;
@@ -48,52 +49,43 @@ public class Sphere extends RadialGeometry {
         return point.subtract(this.center).normalize();
     }
 
+
     /**
-     * Finds the intersection points between the given ray and the sphere.
-     * Returns a list of intersection points or null if there are no intersections.
-     *
+     * Finds the intersection points between the given ray and the sphere which are at a maximum distance from the head of the ray.
      * @param ray The ray for which intersections are to be found.
-     * @return A list of intersection points with the sphere or null if there are no intersections.
+     * @param maxDistance
+     * @return  A list of intersection points with the sphere or null if there are no intersections.
      */
-    @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
-        // Special case: Ray starts from the center of the sphere
-        if (center.equals(ray.getHead()))
-            return List.of(new GeoPoint(this, ray.getPoint(radius)));
-
-        // Calculate vector 'u' connecting the center of the sphere to the camera
-        Vector u = center.subtract(ray.getHead());
-
-        // Calculate projection of 'u' onto the ray direction
-        double tm = u.dotProduct(ray.getDirection());
-
-        // Calculate distance from the center to the ray (d)
-        double d = Math.sqrt(u.lengthSquared() - tm * tm);
-
-        // Check for no intersection or tangential intersection
-        if (d > radius || isZero(d - radius))
-            return null;
-
-        // Calculate half-chord length (th) using Pythagorean theorem
-        double th = Math.sqrt(radius * radius - d * d);
-
-        // Calculate intersection parameters
-        double t1 = alignZero(tm - th);
-        double t2 = alignZero(tm + th);
-
-        // Check for valid intersection points
-        if ((t1 < 0 || isZero(t1)) && t2 > 0 )
-            return List.of(new GeoPoint(this, ray.getPoint(t2)));
-        else if (t2 > 0) {
-            Point point1 = ray.getPoint(t1);
-            Point point2 = ray.getPoint(t2);
-            if (point1.distance(ray.getHead()) < point2.distance(ray.getHead()))
-                return List.of(new GeoPoint(this, point1), new GeoPoint(this, point2));
-            else
-                return List.of(new GeoPoint(this, point2), new GeoPoint(this, point1));
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray,double maxDistance) {
+        double d = 0, tm = 0;
+        //if head is not the center, calculate tm (the scaling product to get to the point in the middle of the ray part inside the sphere)
+        //and d (tm point's distance from center)
+        if (!ray.getHead().equals(center)) {
+            Vector vector = center.subtract(ray.getHead());
+            tm = alignZero(ray.getDirection().dotProduct(vector));
+            d = alignZero(Math.sqrt(vector.lengthSquared() - tm * tm));
         }
-        // No valid intersection points
+
+        if (d < radius) {    //if the ray is inside the sphere
+            //th = the scaling product to get to the sphere from tm point
+            double th = alignZero(Math.sqrt(radius * radius - d * d));
+            double t1 = tm + th;
+            double t2 = tm - th;
+            if (t1 > 0 && alignZero(t1-maxDistance)<=0) {   //if t1 is in the ray's direction
+                Point p1 = ray.getPoint(t1);
+                if (t2 > 0 && alignZero(t2-maxDistance)<=0) {   //if t2 is in the ray's direction
+                    Point p2 = ray.getPoint(t2);
+                    if (p1.distance(ray.getHead()) < p2.distance(ray.getHead()))
+                        return List.of(new GeoPoint(this, p1), new GeoPoint(this, p2));
+                    return List.of(new GeoPoint(this, p2), new GeoPoint(this, p1));
+                }
+                return List.of(new GeoPoint(this, p1));
+
+            } else if (t2 > 0 && alignZero(t2-maxDistance)<=0) {    //if t2 is in the ray's direction (and t1 is not)
+                Point p2 = ray.getPoint(t2);
+                return List.of(new GeoPoint(this, p2));
+            }
+        }
         return null;
     }
-
 }

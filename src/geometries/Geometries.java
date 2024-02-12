@@ -3,10 +3,7 @@ package geometries;
 import primitives.Point;
 import primitives.Ray;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Represents a collection of geometric objects that implement the Intersectable interface.
@@ -50,15 +47,14 @@ public class Geometries extends Intersectable {
      * @return A list of intersection points, or null if there are no intersections.
      */
     @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray){
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray,double maxDistance){
         List<GeoPoint> intersections = null;
         for (Intersectable intersectable : geometries) {
-            if (intersectable.findGeoIntersectionsHelper(ray) != null) {
-                for (GeoPoint geoPoints : intersectable.findGeoIntersectionsHelper(ray)) {
-                    if (intersections == null)
-                        intersections = new LinkedList<>();
-                    intersections.add(geoPoints);
-                }
+            List<GeoPoint> geoPoints = intersectable.findGeoIntersectionsHelper(ray,maxDistance);
+            if (geoPoints != null) {
+                if(intersections == null)
+                    intersections = new ArrayList<>();
+                intersections.addAll(geoPoints);
             }
         }
         if (intersections != null)

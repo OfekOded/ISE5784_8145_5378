@@ -81,4 +81,14 @@ public class PointLight extends Light implements LightSource {
     public Vector getL(Point point) {
         return point.subtract(position).normalize();
     }
+
+    /**
+     * Calculates the distance between the light source and the point
+     * @param point
+     * @return the distance between the light source and the point
+     */
+    @Override
+    public double getDistance(Point point) {
+        return position.distance(point);
+    }
 }

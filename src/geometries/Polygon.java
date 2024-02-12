@@ -3,6 +3,7 @@ package geometries;
 import java.util.LinkedList;
 import java.util.List;
 
+import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
 import primitives.Point;
@@ -96,15 +97,15 @@ public class Polygon extends Geometry {
     }
 
     /**
-     * Finds the intersection points between the polygon and a given ray.
-     *
+     * Finds the intersection points between the polygon and a given ray which are at a maximum distance from the head of the beam.
      * @param ray The ray for which intersections are to be found.
+     * @param maxDistance
      * @return A list of GeoPoint objects representing the intersection points and the polygon.
      */
     @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray){
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray,double maxDistance){
         // Find intersections with the plane containing the polygon.
-        List<Point> intersectionPoint = plane.findIntersections(ray);
+        List<Point> intersectionPoint = plane.findIntersections(ray,maxDistance);
 
         // If there are no intersections with the plane, return null.
         if (intersectionPoint == null)

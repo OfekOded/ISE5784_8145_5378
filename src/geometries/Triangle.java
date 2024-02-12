@@ -28,16 +28,15 @@ public class Triangle extends Polygon {
     }
 
     /**
-     * Overrides the findIntersections method to find the intersection points
-     * between a ray and a polygon in 3D space.
-     *
-     * @param ray The ray for which intersections with the polygon are to be found.
-     * @return A list of intersection points if they exist, or null if no intersections are found.
+     * Finds the intersection points between the given ray and the triangle which are at a maximum distance from the head of the ray.
+     * @param ray The ray for which intersections are to be found.
+     * @param maxDistance
+     * @return  A list of intersection points if they exist, or null if no intersections are found.
      */
     @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray){
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray,double maxDistance){
         // Find intersections with the plane containing the polygon.
-        List<Point> intersectionPoint = plane.findIntersections(ray);
+        List<Point> intersectionPoint = plane.findIntersections(ray,maxDistance);
 
         // If there are no intersections with the plane, return null.
         if (intersectionPoint == null)

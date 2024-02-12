@@ -10,6 +10,7 @@ import primitives.Vector;
 
 import java.util.List;
 
+import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
 /**
@@ -79,14 +80,15 @@ public class Plane extends Geometry {
         return normal;
     }
 
+
     /**
-     * Finds the intersection points between the plane and a given ray.
-     *
+     * Finds the intersection points between the plane and a given ray which are at a maximum distance from the head of the ray.
      * @param ray The ray for which intersections are to be found.
+     * @param maxDistance
      * @return A list of GeoPoint objects representing the intersection points and the plane.
      */
     @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray,double maxDistance) {
         // Check if the ray is parallel or almost parallel to the plane
         if (isZero(normal.dotProduct(ray.getDirection())))
             return null;
@@ -99,6 +101,8 @@ public class Plane extends Geometry {
             return null;
 
         // Return a list containing the intersection point
-        return List.of(new GeoPoint(this, ray.getPoint(t)));
+        if(alignZero(t-maxDistance) <=0)
+            return List.of(new GeoPoint(this, ray.getPoint(t)));
+        return null;
     }
 }
