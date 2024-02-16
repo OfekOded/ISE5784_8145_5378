@@ -14,11 +14,19 @@ public class Material {
      * The diffuse reflection coefficient.
      */
     public Double3 kD = Double3.ZERO;
+    /**
+     * The attenuation coefficient of transparency
+     */
+    public Double3 kT=Double3.ZERO;
+    /**
+     * attenuation coefficient of reflection
+     */
+    public Double3 kR=Double3.ZERO;
 
     /**
      * The shininess exponent affecting the size and intensity of specular highlights.
      */
-    public int shininess = 0;
+    public int shininess = 1;
 
     /**
      * Sets the specular reflection coefficient (kS) for the material.
@@ -30,6 +38,49 @@ public class Material {
         this.kS = kS;
         return this;
     }
+    /**
+     * Sets the reflection coefficient for this material.
+     *
+     * @param kr The reflection coefficient as a Double3 object representing the color components.
+     * @return The Material object with the reflection coefficient set.
+     */
+    public Material setKr(Double3 kr) {
+        this.kR = kr;
+        return this;
+    }
+
+    /**
+     * Sets the transmission coefficient for this material.
+     *
+     * @param kt The transmission coefficient as a Double3 object representing the color components.
+     * @return The Material object with the transmission coefficient set.
+     */
+    public Material setKt(double kt) {
+        this.kT = new Double3(kt);
+        return this;
+    }
+    /**
+     * Sets the reflection coefficient for this material.
+     *
+     * @param kr The reflection coefficient as a Double3 object representing the color components.
+     * @return The Material object with the reflection coefficient set.
+     */
+    public Material setKr(double kr) {
+        this.kR = new Double3(kr);
+        return this;
+    }
+
+    /**
+     * Sets the transmission coefficient for this material.
+     *
+     * @param kt The transmission coefficient as a Double3 object representing the color components.
+     * @return The Material object with the transmission coefficient set.
+     */
+    public Material setKt(Double3 kt) {
+        this.kT = kt;
+        return this;
+    }
+
 
     /**
      * Sets the specular reflection coefficient (kS) for the material using a scalar value.

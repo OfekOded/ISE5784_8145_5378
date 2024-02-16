@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
 /**
@@ -12,6 +13,7 @@ import static primitives.Util.isZero;
  * It is used in more complex geometric shapes such as cylinders, etc.
  */
 public class Ray {
+    private static final double DELTA = 0.1;
     /**
      * The variable stores a point representing the head of the ray.
      */
@@ -33,7 +35,11 @@ public class Ray {
         this.head = head;
         this.direction = direction.normalize();
     }
-
+    public Ray(Point point, Vector v, Vector n) {
+        double nv = v.dotProduct(n);
+        this.head = (isZero(nv) ? point : point.add(n.scale(nv < 0 ? -DELTA : DELTA)));
+        this.direction = v.normalize();
+    }
     /**
      * Retrieves the head point of the ray.
      *
@@ -82,13 +88,13 @@ public class Ray {
      * @return The closest GeoPoint to the ray's head.
      */
     public GeoPoint findClosestGeoPoint(List<GeoPoint> intersections) {
-        GeoPoint closestGeoPoint = intersections.isEmpty() ? null : intersections.get(0);
-
+        if (intersections==null)
+            return null;
+        GeoPoint closestGeoPoint =intersections.get(0);
         for (GeoPoint geoPoint : intersections) {
             if (geoPoint.point.distance(head) < closestGeoPoint.point.distance(head))
-                closestGeoPoint = geoPoint;
-        }
-
+                    closestGeoPoint = geoPoint;
+            }
         return closestGeoPoint;
     }
 

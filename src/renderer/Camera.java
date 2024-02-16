@@ -42,6 +42,8 @@ public class Camera implements Cloneable {
          */
         public Builder setCameraLocation(Point cameraLocation) {
             this.camera.cameraLocation = cameraLocation;
+            if(Pto!=null)
+                camera.Vto = Pto.subtract(camera.cameraLocation).normalize();
             return this;
         }
 
@@ -71,7 +73,8 @@ public class Camera implements Cloneable {
         public Builder setDirection(Point Pto, Vector vup) {
             camera.Vup = vup;
             this.Pto = Pto;
-            camera.Vto = Pto.subtract(camera.cameraLocation).normalize();
+            if(camera.cameraLocation!=null)
+                camera.Vto = Pto.subtract(camera.cameraLocation).normalize();
             return this;
         }
 
