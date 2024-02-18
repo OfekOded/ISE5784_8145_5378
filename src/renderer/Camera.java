@@ -163,8 +163,9 @@ public class Camera implements Cloneable {
             if (Pto != null) {
                 if (Pto.equals(camera.cameraLocation))
                     throw new IllegalArgumentException("must be different");
-
-                this.camera.Vright = camera.Vup.crossProduct(Pto.subtract(camera.cameraLocation)).normalize();
+            if(Pto.subtract(camera.cameraLocation).normalize().equals(this.camera.Vup))
+                    throw new IllegalArgumentException("must be different");
+            this.camera.Vright = camera.Vup.crossProduct(Pto.subtract(camera.cameraLocation)).normalize();
             } else
                 this.camera.Vright = camera.Vup.crossProduct(camera.Vto).normalize();
             try {

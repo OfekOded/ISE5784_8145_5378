@@ -86,33 +86,7 @@ public class SimpleRayTracer extends RayTracerBase {
         Vector r = v.subtract(n.scale(2 * nv));
         return new Ray(gp.point, r, n);
     }
-    /**
-     * Calculates the local lighting effects at an intersection point.
-     *
-     * @param gp  The intersection point.
-     * @param ray The tracing ray.
-     * @return The color contribution from local lighting effects.
-     */
-//    private Color calcLocalEffects(Intersectable.GeoPoint gp, Ray ray, Double3 k) {
-//        Color color = gp.geometry.getEmission();
-//        Vector n = gp.geometry.getNormal(gp.point);
-//        Vector v = ray.getDirection();
-//        double nv = alignZero(n.dotProduct(v));
-//        if (nv == 0) return color;
-//        Material material = gp.geometry.getMaterial();
-//        for (LightSource lightSource : scene.lights) {
-//            Vector l = lightSource.getL(gp.point);
-//            double nl = alignZero(n.dotProduct(l));
-//            if (nl * nv > 0) {
-//                Double3 ktr = transparency(gp,lightSource,l,n);
-//                if (ktr.product(k).lowerThan(MIN_CALC_COLOR_K)) {
-//                    Color iL = lightSource.getIntensity(gp.point).scale(ktr);
-//                    color = color.add(iL.scale(calcDiffusive(material, nl).add(calcSpecular(material, n, l, nl, v))));
-//                }
-//            }
-//        }
-//        return color;
-//    }
+
     private Color calcLocalEffects(GeoPoint gp, Ray ray, Double3 k) {
         Color color = gp.geometry.getEmission();    //geometry's emission
 
@@ -167,7 +141,6 @@ public class SimpleRayTracer extends RayTracerBase {
     }
 
 
-//yaniv
     private Double3 transparency(GeoPoint geoPoint, LightSource lightSource, Vector l, Vector n) {
         Vector lightDirection = l.scale(-1); // from point to light source
         Ray lightRay = new Ray(geoPoint.point, lightDirection, n);
@@ -183,31 +156,4 @@ public class SimpleRayTracer extends RayTracerBase {
         }
         return ktr;
     }
-    //i
-//    private Double3 transparency(GeoPoint gp, LightSource ls, Vector l, Vector n,double nl){
-//        Vector lightDirection = l.scale(-1); // from point to light source
-//        Vector deltaVector = n.scale(nl < 0 ? DELTA : -DELTA);
-//        Point point = gp.point.add(deltaVector);
-//        Ray ray = new Ray(point, lightDirection);
-//        List<Intersectable.GeoPoint> intersections = scene.geometries.findGeoIntersections(ray, ls.getDistance(point));
-//        if (intersections == null) return true;
-//        for (GeoPoint geoPoint:intersections)
-//            if(geoPoint.geometry.getMaterial().kT.equals(Double3.ZERO))
-//                return false;
-//        return true;
-//    }
-    //balon
-//    private Double3 transparency(GeoPoint gp, LightSource light, Vector l, Vector n, double nl) {
-//        Vector lightDirection = l.scale(-1); // from point to light source
-//        Ray ray = new Ray(gp.point, lightDirection, n);
-//        List<GeoPoint> intersections = scene.geometries.findGeoIntersections(ray, light.getDistance(gp.point));
-//        Double3 ktr = Double3.ONE;
-//        if (intersections != null)
-//            for (GeoPoint p : intersections) {
-//                ktr = ktr.product(p.geometry.getMaterial().kT);
-//                if (ktr.equals(Double3.ZERO))
-//                    break;
-//            }
-//        return ktr;
-//    }
 }
