@@ -1,11 +1,6 @@
 package renderer;
 
-import primitives.Color;
-import primitives.Point;
-import primitives.Ray;
-import primitives.Vector;
-import scene.Scene;
-
+import primitives.*;
 import java.util.MissingResourceException;
 
 import static primitives.Util.isZero;
@@ -16,7 +11,8 @@ import static primitives.Util.isZero;
  * The camera is responsible for constructing rays for rendering images.
  */
 public class Camera implements Cloneable {
-
+    Grid grid;
+    boolean AntiAliasing =false;
     private Point cameraLocation;
     private Vector Vup;
     private Vector Vto;
@@ -27,13 +23,18 @@ public class Camera implements Cloneable {
     private ImageWriter imageWriter;
     private RayTracerBase rayTracer;
 
+
+
     /**
      * The Builder class for constructing a Camera object.
      */
     public static class Builder {
         final private Camera camera = new Camera();
         private Point Pto = null;
-
+        public Builder setAntiAliasing(boolean antiAliasing) {
+            camera.AntiAliasing = antiAliasing;
+            return this;
+        }
         /**
          * Sets the location of the camera.
          *
@@ -66,8 +67,8 @@ public class Camera implements Cloneable {
 
         /**
          * Set the direction of the camera
-         * @param Pto
-         * @param vup
+         * @param Pto point to
+         * @param vup vector up
          * @return this object according to the builder design pattern
          */
         public Builder setDirection(Point Pto, Vector vup) {
@@ -131,6 +132,11 @@ public class Camera implements Cloneable {
                 return this;
             }
             throw new IllegalArgumentException("The input of the distance variable is incorrect");
+        }
+
+        public Builder setGrid(int rootNumberOfRays) {
+            camera.grid = new Grid(rootNumberOfRays, camera.width/camera.imageWriter.getNx(), camera.height/camera.imageWriter.getNy());
+            return this;
         }
 
         /**
@@ -261,17 +267,13 @@ public class Camera implements Cloneable {
      * @param i  The pixel's Y coordinate.
      * @return The constructed ray for the specified pixel.
      */
-    /**
-     * Constructs a ray for a given pixel in the image.
-     *
-     * @param nX The total number of pixels in the X direction.
-     * @param nY The total number of pixels in the Y direction.
-     * @param j  The pixel's X coordinate.
-     * @param i  The pixel's Y coordinate.
-     * @return The constructed ray for the specified pixel.
-     */
     public Ray constructRay(int nX, int nY, int j, int i) {
         // Image center
+        Point centerPoint = getCenterPoint(nX, nY, j, i);
+        return new Ray(cameraLocation, centerPoint.subtract(cameraLocation));
+    }
+
+    private Point getCenterPoint(int nX, int nY, int j, int i) {
         Point imageCenter = cameraLocation.add(Vto.scale(VpDistance));
 
         // Pixel aspect ratio
@@ -282,18 +284,18 @@ public class Camera implements Cloneable {
         double yOffset = -(i - (double) (nY - 1) / 2) * pixelHeight;
         double xOffset = (j - (double) (nX - 1) / 2) * pixelWidth;
 
-        Point pixelPoint;
+        Point centerPoint;
 
         // Handle special cases where one of the offsets is zero
         if (xOffset == 0 && yOffset == 0)
-            pixelPoint = imageCenter;
+            centerPoint = imageCenter;
         else if (xOffset == 0)
-            pixelPoint = imageCenter.add(Vup.scale(yOffset));
+            centerPoint = imageCenter.add(Vup.scale(yOffset));
         else if (yOffset == 0)
-            pixelPoint = imageCenter.add(Vright.scale(xOffset));
+            centerPoint = imageCenter.add(Vright.scale(xOffset));
         else
-            pixelPoint = imageCenter.add(Vright.scale(xOffset).add(Vup.scale(yOffset)));
-        return new Ray(cameraLocation, pixelPoint.subtract(cameraLocation));
+            centerPoint = imageCenter.add(Vright.scale(xOffset).add(Vup.scale(yOffset)));
+        return centerPoint;
     }
 
     /**
@@ -343,7 +345,16 @@ public class Camera implements Cloneable {
      * @param j  The pixel's Y coordinate.
      */
     private void castRay(int Nx, int Ny, int i, int j) {
-        imageWriter.writePixel(i, j, rayTracer.traceRay(constructRay(Nx, Ny, i, j)));
+        Color averageOfColors=Color.BLACK;
+        if(!AntiAliasing)
+            imageWriter.writePixel(i, j, rayTracer.traceRay(constructRay(Nx, Ny, i, j)));
+        else{
+            grid.rayBeam(getCenterPoint(Nx,Ny,i,j),Vup,Vto);
+            for(Point point: grid.grid) {
+                averageOfColors=averageOfColors.add(rayTracer.traceRay( new Ray(cameraLocation, point.subtract(cameraLocation))));
+            }
+            imageWriter.writePixel(i,j,averageOfColors.scale((double) 1 / (grid.rootNumberOfRays * grid.rootNumberOfRays)));
+        }
     }
 
 }

@@ -80,22 +80,22 @@ public class Point {
     /**
      * Calculates the squared distance between this point and another point.
      *
-     * @param anotherPoint The other point.
+     * @param point The other point.
      * @return The squared distance between the points.
      */
-    public Double distanceSquared(Point anotherPoint){
-        return (xyz.d1 - anotherPoint.xyz.d1) * (this.xyz.d1 - anotherPoint.xyz.d1) +
-                (this.xyz.d2 - anotherPoint.xyz.d2) * (this.xyz.d2 - anotherPoint.xyz.d2) +
-                (this.xyz.d3 - anotherPoint.xyz.d3) * (this.xyz.d3 - anotherPoint.xyz.d3);
+    public Double distanceSquared(Point point){
+        return (xyz.d1 - point.xyz.d1) * (xyz.d1 - point.xyz.d1) +
+                (xyz.d2 - point.xyz.d2) * (xyz.d2 - point.xyz.d2) +
+                (xyz.d3 - point.xyz.d3) * (xyz.d3 - point.xyz.d3);
     }
 
     /**
      * Calculates the distance between this point and another point.
      *
-     * @param anotherPoint The other point.
+     * @param point The other point.
      * @return The distance between the points.
      */
-    public double distance(Point anotherPoint){
-        return Math.sqrt(distanceSquared(anotherPoint));
+    public double distance(Point point){
+        return Math.sqrt(distanceSquared(point));
     }
 }

@@ -37,43 +37,44 @@ public class Vector extends Point {
     /**
      * Performs vector addition with another vector.
      *
-     * @param v1 The vector to add.
+     * @param vector The vector to add.
      * @return A new vector resulting from the addition.
      */
-    public Vector add(Vector v1) {
-        return new Vector(xyz.add(v1.xyz));
+    public Vector add(Vector vector) {
+        return new Vector(xyz.add(vector.xyz));
     }
 
     /**
      * Scales the vector by a scalar.
      *
-     * @param num The scalar to multiply with.
+     * @param t The scalar to multiply with.
      * @return A new vector resulting from the scaling.
      */
-    public Vector scale(double num) {
-        return new Vector(xyz.scale(num));
+    public Vector scale(double t) {
+        return new Vector(xyz.scale(t));
     }
 
     /**
      * Calculates the dot product of this vector and another vector.
      *
-     * @param v1 The other vector.
+     * @param vector The other vector.
      * @return The dot product of the vectors.
      */
-    public double dotProduct(Vector v1) {
-        return (v1.xyz.d1 * this.xyz.d1) + (v1.xyz.d2 * this.xyz.d2) + (v1.xyz.d3 * this.xyz.d3);
+    public double dotProduct(Vector vector) {
+        Double3 helper =vector.xyz.product(xyz);
+        return helper.d1+ helper.d2+ helper.d3;
     }
 
     /**
      * Calculates the cross product of this vector and another vector.
      *
-     * @param v1 The other vector.
+     * @param vector The other vector.
      * @return A new vector resulting from the cross product.
      */
-    public Vector crossProduct(Vector v1) {
-        return new Vector((v1.xyz.d2 * this.xyz.d3) - (v1.xyz.d3 * this.xyz.d2),
-                (v1.xyz.d3 * this.xyz.d1) - (v1.xyz.d1 * this.xyz.d3),
-                (v1.xyz.d1 * this.xyz.d2) - (v1.xyz.d2 * this.xyz.d1));
+    public Vector crossProduct(Vector vector) {
+        return new Vector((vector.xyz.d2 * xyz.d3) - (vector.xyz.d3 * xyz.d2),
+                (vector.xyz.d3 * xyz.d1) - (vector.xyz.d1 * xyz.d3),
+                (vector.xyz.d1 * xyz.d2) - (vector.xyz.d2 * xyz.d1));
     }
 
     /**
@@ -82,7 +83,7 @@ public class Vector extends Point {
      * @return The squared length of the vector.
      */
     public double lengthSquared() {
-        return (this.xyz.d1 * this.xyz.d1) + (this.xyz.d2 * this.xyz.d2) + (this.xyz.d3 * this.xyz.d3);
+        return (xyz.d1 * xyz.d1) + (xyz.d2 * xyz.d2) + (xyz.d3 * xyz.d3);
     }
 
     /**
@@ -91,7 +92,7 @@ public class Vector extends Point {
      * @return The length of the vector.
      */
     public double length() {
-        return Math.sqrt(this.lengthSquared());
+        return Math.sqrt(lengthSquared());
     }
 
     /**
@@ -100,7 +101,7 @@ public class Vector extends Point {
      * @return A new vector representing the normalized vector.
      */
     public Vector normalize() {
-        return new Vector(this.xyz.d1 / this.length(), this.xyz.d2 / this.length(), this.xyz.d3 / this.length());
+        return new Vector(xyz.scale(1/length()));
     }
 
     /**
@@ -112,7 +113,13 @@ public class Vector extends Point {
     public String toString() {
         return "Vector{}";
     }
-
+    /**
+     * Indicates whether some other object is "equal to" this one.
+     * This method overrides the default equals method inherited from Object.
+     *
+     * @param obj the object to compare this instance with.
+     * @return true if the specified object is equal to this object; false otherwise.
+     */
     @Override
     public boolean equals(Object obj) {
         if(this==obj)return true;

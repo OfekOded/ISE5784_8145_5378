@@ -1,15 +1,13 @@
 package renderer;
 
-import geometries.Geometry;
 import geometries.Intersectable;
 import lighting.LightSource;
+import lighting.PointLight;
 import primitives.*;
 import scene.Scene;
 import geometries.Intersectable.GeoPoint;
 
 import java.util.List;
-
-import static java.lang.Math.pow;
 import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
@@ -20,11 +18,9 @@ import static primitives.Util.isZero;
  * <p>This ray tracer calculates local lighting effects, such as diffuse and specular reflections, for each intersection point.</p>
  */
 public class SimpleRayTracer extends RayTracerBase {
-
+    Grid grid;
     private static final int MAX_CALC_COLOR_LEVEL = 10;
     private static final double MIN_CALC_COLOR_K = 0.001;
-
-    private static final double DELTA = 0.1; //Variable for correcting an inaccuracy in the calculation of shading rays
     public static final Double3 INITIAL_K = Double3.ONE;
 
     /**
@@ -49,36 +45,83 @@ public class SimpleRayTracer extends RayTracerBase {
         Intersectable.GeoPoint closestPoint = ray.findClosestGeoPoint(intersections);
         return calcColor(closestPoint, ray);
     }
-
-    private Color calcColor(GeoPoint geopoint, Ray ray) {
-        return calcColor(geopoint, ray, MAX_CALC_COLOR_LEVEL, INITIAL_K).add(scene.ambientLight.getIntensity());
+    /**
+     * Calculates the color of a point in the scene.
+     *
+     * @param geoPoint The intersection point in the scene.
+     * @param ray      The ray that intersects the point.
+     * @return The color of the point in the scene.
+     */
+    private Color calcColor(GeoPoint geoPoint, Ray ray) {
+        return calcColor(geoPoint, ray, MAX_CALC_COLOR_LEVEL, INITIAL_K).add(scene.ambientLight.getIntensity());
     }
-
+    /**
+     * Recursively calculates the color of a point in the scene, considering local and global effects.
+     *
+     * @param intersection The intersection point in the scene.
+     * @param ray          The ray that intersects the point.
+     * @param level        The recursion level.
+     * @param k            Coefficient representing the attenuation of light.
+     * @return The color of the point considering local and global effects.
+     */
     private Color calcColor(GeoPoint intersection, Ray ray, int level, Double3 k) {
         Color color = calcLocalEffects(intersection, ray,k);
         return 1 == level ? color : color.add(calcGlobalEffects(intersection, ray, level, k));
     }
-
+    /**
+     * Calculates the global effects (refraction and reflection) of light at a given point.
+     *
+     * @param gp    The intersection point in the scene.
+     * @param ray   The ray that intersects the point.
+     * @param level The recursion level.
+     * @param k     Coefficient representing the attenuation of light.
+     * @return The color of the point considering global effects.
+     */
     private Color calcGlobalEffects(GeoPoint gp, Ray ray, int level, Double3 k) {
         Material material = gp.geometry.getMaterial();
-        return calcColorGLobalEffect(constructRefractedRay(gp, ray), level, material.kT, k).add(calcColorGLobalEffect(constructReflectedRay(gp, ray), level, material.kR, k));
+            return calcColorGLobalEffect(constructRefractedRay(gp, ray), level, material.kT, k).add(calcColorGLobalEffect(constructReflectedRay(gp, ray), level, material.kR, k));
     }
-
+    /**
+     * Calculates the color contribution from a global effect (refraction or reflection).
+     *
+     * @param ray   The ray representing the global effect (refracted or reflected ray).
+     * @param level The recursion level.
+     * @param kx    Coefficient representing the attenuation of light for the specific effect.
+     * @param k     Coefficient representing the overall attenuation of light.
+     * @return The color contribution from the global effect.
+     */
     private Color calcColorGLobalEffect(Ray ray, int level, Double3 kx, Double3 k) {
         Double3 kkx = k.product(kx);
         if (kkx.lowerThan(MIN_CALC_COLOR_K)) return Color.BLACK;
         GeoPoint gp = findClosestIntersection(ray);
         return (gp == null ? scene.background : calcColor(gp, ray, level - 1, kkx)).scale(kx);
     }
-
+    /**
+     * Finds the closest intersection point of a ray with objects in the scene.
+     *
+     * @param ray The ray to trace.
+     * @return The closest intersection point with objects in the scene.
+     */
     private GeoPoint findClosestIntersection(Ray ray) {
         return ray.findClosestGeoPoint(scene.geometries.findGeoIntersections(ray));
     }
-
+    /**
+     * Constructs a refracted ray at a given intersection point.
+     *
+     * @param gp  The intersection point in the scene.
+     * @param ray The incident ray.
+     * @return The refracted ray.
+     */
     private Ray constructRefractedRay(GeoPoint gp, Ray ray) {
         return new Ray(gp.point, ray.getDirection(), gp.geometry.getNormal(gp.point));
     }
-
+    /**
+     * Constructs a reflected ray at a given intersection point.
+     *
+     * @param gp  The intersection point in the scene.
+     * @param ray The incident ray.
+     * @return The reflected ray.
+     */
     private Ray constructReflectedRay(GeoPoint gp, Ray ray) {
         Vector n = gp.geometry.getNormal(gp.point);
         Vector v = ray.getDirection();
@@ -86,7 +129,14 @@ public class SimpleRayTracer extends RayTracerBase {
         Vector r = v.subtract(n.scale(2 * nv));
         return new Ray(gp.point, r, n);
     }
-
+    /**
+     * Calculates the local effects (diffuse and specular) of light at a given geometric point.
+     *
+     * @param gp  The geometric point.
+     * @param ray The ray from the camera to the geometric point.
+     * @param k   Coefficient representing the attenuation of light due to various factors.
+     * @return The color representing the local effects of light at the geometric point.
+     */
     private Color calcLocalEffects(GeoPoint gp, Ray ray, Double3 k) {
         Color color = gp.geometry.getEmission();    //geometry's emission
 
@@ -140,7 +190,15 @@ public class SimpleRayTracer extends RayTracerBase {
         return material.kS.scale(Math.pow(Math.max(0, -v.dotProduct(r)), material.shininess));
     }
 
-
+    /**
+     * Calculates the transparency of a surface at a given point when illuminated by a light source.
+     *
+     * @param geoPoint    The point on the surface.
+     * @param lightSource The light source illuminating the scene.
+     * @param l           The direction vector from the point towards the light source.
+     * @param n           The normal vector at the given point on the surface.
+     * @return The transparency coefficient of the surface at the given point.
+     */
     private Double3 transparency(GeoPoint geoPoint, LightSource lightSource, Vector l, Vector n) {
         Vector lightDirection = l.scale(-1); // from point to light source
         Ray lightRay = new Ray(geoPoint.point, lightDirection, n);

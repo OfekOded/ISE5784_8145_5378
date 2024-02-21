@@ -1,11 +1,8 @@
 package primitives;
 
 import geometries.Intersectable.GeoPoint;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-
-import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
 /**
@@ -20,7 +17,7 @@ public class Ray {
     final private Point head;
 
     /**
-     * The variable stores the direction of the ray; the variable is of vector type.
+     * The variable stores the direction of the ray the variable is of vector type.
      */
     final private Vector direction;
 
@@ -35,6 +32,13 @@ public class Ray {
         this.head = head;
         this.direction = direction.normalize();
     }
+    /**
+     * Initializes a ray and makes a correction because of the inaccuracy in the calculations
+     *
+     * @param point The starting point of the ray.
+     * @param v The direction vector of the ray.
+     * @param n The normal vector.
+     */
     public Ray(Point point, Vector v, Vector n) {
         double nv = v.dotProduct(n);
         this.head = (isZero(nv) ? point : point.add(n.scale(nv < 0 ? -DELTA : DELTA)));
@@ -97,7 +101,13 @@ public class Ray {
             }
         return closestGeoPoint;
     }
-
+    /**
+     * Compares this ray with the specified object for equality.
+     * Two rays are considered equal if they have the same head and direction.
+     *
+     * @param o the object to compare with
+     * @return true if the objects are equal, false otherwise
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -105,12 +115,12 @@ public class Ray {
         Ray ray = (Ray) o;
         return Objects.equals(head, ray.head) && Objects.equals(direction, ray.direction);
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(head, direction);
-    }
-
+    /**
+     * Returns a string representation of the ray.
+     * The string includes the head and direction attributes.
+     *
+     * @return a string representation of the ray
+     */
     @Override
     public String toString() {
         return "Ray{" +

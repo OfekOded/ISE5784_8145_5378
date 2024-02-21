@@ -50,10 +50,10 @@ public class Material {
     }
 
     /**
-     * Sets the transmission coefficient for this material.
+     * Sets the transparency coefficient for this material.
      *
-     * @param kt The transmission coefficient as a Double3 object representing the color components.
-     * @return The Material object with the transmission coefficient set.
+     * @param kt The transparency coefficient as a Double3 object representing the color components.
+     * @return The Material object with the transparency coefficient set.
      */
     public Material setKt(double kt) {
         this.kT = new Double3(kt);
@@ -71,10 +71,10 @@ public class Material {
     }
 
     /**
-     * Sets the transmission coefficient for this material.
+     * Sets the transparency coefficient for this material.
      *
-     * @param kt The transmission coefficient as a Double3 object representing the color components.
-     * @return The Material object with the transmission coefficient set.
+     * @param kt The transparency coefficient as a Double3 object representing the color components.
+     * @return The Material object with the transparency coefficient set.
      */
     public Material setKt(Double3 kt) {
         this.kT = kt;

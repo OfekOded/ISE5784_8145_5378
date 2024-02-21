@@ -18,6 +18,10 @@ public abstract class Intersectable {
         public Geometry geometry; // The intersected geometry
         public Point point; // The point of intersection
 
+        public Point getPoint() {
+            return point;
+        }
+
         /**
          * Constructs a GeoPoint object with the given geometry and intersection point.
          *

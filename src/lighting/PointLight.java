@@ -10,7 +10,7 @@ import primitives.Vector;
  * LightSource interface to define the behavior of a point light source.
  */
 public class PointLight extends Light implements LightSource {
-    private Point position;
+    private final Point position;
     private double kL = 0;
     private double kC = 1;
     private double kQ = 0;

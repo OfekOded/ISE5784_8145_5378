@@ -1,8 +1,7 @@
 package geometries;
 
-import primitives.Point;
-import primitives.Ray;
 
+import primitives.Ray;
 import java.util.*;
 
 /**

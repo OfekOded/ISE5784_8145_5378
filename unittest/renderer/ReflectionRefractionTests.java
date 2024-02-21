@@ -7,6 +7,7 @@ import static java.awt.Color.*;
 
 import geometries.Plane;
 import geometries.Polygon;
+import lighting.PointLight;
 import org.junit.jupiter.api.Test;
 
 import geometries.Sphere;
@@ -115,107 +116,77 @@ public class ReflectionRefractionTests {
                 .renderImage()
                 .writeToImage();
     }
-
     @Test
-    void customSceneTest() {
-        Point A = new Point(4, 0, 0);
-        Point B = new Point(3.5, 1.5, 1);
-        Point C = new Point(3, 3, 0);
-        Point D = new Point(1.5, 3.5, 1);
-        Point E = new Point(0, 4, 0);
-        Point F = new Point(1.5, 0.5, 1);
-        Point G = new Point(3, -3, 0);
-        Point H = new Point(-0.5, -1.5, 1);
-        Point I = new Point(-4, 0, 0);
-        Point J = new Point(-3.5, -1.5, 1);
-        Point K = new Point(-3, -3, 0);
-        Point L = new Point(-1.5, -3.5, 1);
-        Point M = new Point(0, -4, 0);
-        Point N = new Point(-1.5, -0.5, 1);
-        Point O = new Point(-3, 3, 0);
-        Point P = new Point(0.5, 1.5, 1);
-        Point Q = new Point(0, 0, -5);
-        Camera.Builder cameraBuilder1 = Camera.getBuilder().setDirection(Point.ZERO, new Vector(0, 0, 1)).setRayTracer(new SimpleRayTracer(scene));
-        scene.geometries.add(
-                new Triangle(A,B,C).setEmission(new Color(BLUE))
-                        .setMaterial(new Material().setkD(0.25).setkS(0.25).setShininess(20)
-                                .setKt(new Double3(0.5, 0, 0))),
-                new Triangle(C,D,E).setEmission(new Color(BLUE))
-                        .setMaterial(new Material().setkD(0.25).setkS(0.25).setShininess(20)),
-                new Triangle(E,F,G).setEmission(new Color(BLUE))
-                        .setMaterial(new Material().setKr(1)),
-                new Triangle(G,H,I).setEmission(new Color(BLUE))
-                        .setMaterial(new Material().setKr(1)),
-                new Triangle(I,J,K).setEmission(new Color(BLUE))
-                        .setMaterial(new Material().setKr(1)),
-                new Triangle(K,L,M).setEmission(new Color(BLUE))
-                        .setMaterial(new Material().setKr(1)),
-                new Triangle(M,N,O).setEmission(new Color(BLUE))
-                        .setMaterial(new Material().setKr(1)),
-                new Triangle(O,P,A).setEmission(new Color(BLUE))
-                        .setMaterial(new Material().setKr(1)),
-                new Triangle(B,C,D).setEmission(new Color(BLUE))
-                        .setMaterial(new Material().setKr(1)),
-                new Triangle(D,E,F).setEmission(new Color(BLUE))
-                .setMaterial(new Material().setKr(1)),
-                new Triangle(F,G,H).setEmission(new Color(BLUE))
-                        .setMaterial(new Material().setKr(1)),
-                new Triangle(H,I,J).setEmission(new Color(BLUE))
-                        .setMaterial(new Material().setKr(1)),
-                new Triangle(J,K,L).setEmission(new Color(BLUE))
-                        .setMaterial(new Material().setKr(1)),
-                new Triangle(L,M,N).setEmission(new Color(BLUE))
-                        .setMaterial(new Material().setKr(1)),
-                new Triangle(N,O,P).setEmission(new Color(BLUE))
-                        .setMaterial(new Material().setKr(1)),
-                new Triangle(P,A,B).setEmission(new Color(BLUE))
-                        .setMaterial(new Material().setKr(1)),
+    public void mixedGeometryTest() {
+        scene.setAmbientLight(new AmbientLight(new Color(WHITE), 0.15));
+        scene.lights.add(
+                new SpotLight(new Color(700, 400, 400), new Point(60, 50, 100), new Vector(1, 1, -1))
+                        .setkL(4E-5).setkQ(2E-7));
+        Camera.Builder cameraBuilder = Camera.getBuilder()
+                .setDirection(Point.ZERO, new Vector(0, 0, 1))
+                .setRayTracer(new SimpleRayTracer(scene));
+        Point A =new Point(0,-3,0);
+        Point B =new Point(3,0,0);
+        Point C =new Point(0,0,4);
+        Point D =new Point(0,3,0);
+        Point E =new Point(-3,0,0);
+        Point F =new Point(3,3,-7);
+        Point G =new Point(-3,3,-7);
+        Point H =new Point(3,-3,-7);
+        Point I =new Point(-3,-3,-7);
+        Point J =new Point(0,0,6);
+        Point K =new Point(0,-6,0);
+        Point L =new Point(0,6,0);
+        Point N =new Point(-6,0,0);
+        Material M = new Material().setkD(0.5).setkS(0.5).setShininess(1).setKr(0.45);
 
-
-                new Triangle(A,Q,C).setEmission(new Color(BLUE))
-                        .setMaterial(new Material().setKr(1)),
-                new Triangle(C,Q,E).setEmission(new Color(BLUE))
-                        .setMaterial(new Material().setKr(1)),
-                new Triangle(E,Q,G).setEmission(new Color(BLUE))
-                        .setMaterial(new Material().setKr(1)),
-                new Triangle(G,Q,I).setEmission(new Color(BLUE))
-                        .setMaterial(new Material().setKr(1)),
-                new Triangle(I,Q,K).setEmission(new Color(BLUE))
-                        .setMaterial(new Material().setKr(1)),
-                new Triangle(K,Q,M).setEmission(new Color(BLUE))
-                        .setMaterial(new Material().setKr(1)),
-                new Triangle(M,Q,O).setEmission(new Color(BLUE))
-                        .setMaterial(new Material().setKr(1)),
-                new Triangle(O,Q,A).setEmission(new Color(BLUE))
-                        .setMaterial(new Material().setKr(1))
-        );
-        scene.setAmbientLight(new AmbientLight(new Color(255, 255, 255), 0.1));
-        scene.lights.add(new SpotLight(new Color(1020, 400, 400), new Point(0, 0, 10), new Vector(0, 0, -4))
-                .setkL(0.00001).setkQ(0.000005));
-
-        cameraBuilder1.setCameraLocation(new Point(0, 50, 0)).setVpDistance(10000)
-                .setVpSize(2500, 2500)
-                .setImageWriter(new ImageWriter("customScene1", 500, 500))
+        scene.geometries.add(new Triangle(A,B,C).setMaterial(M).setEmission(new Color(BLUE)),
+                new Triangle(D,B,C).setMaterial(M).setEmission(new Color(RED)),
+                new Triangle(A,E,C).setMaterial(M).setEmission(new Color(GREEN)),
+                new Triangle(D,E,C).setMaterial(M).setEmission(new Color(YELLOW)),
+                new Triangle(I,H,A).setMaterial(M).setEmission(new Color(0, 255, 255)),
+                new Triangle(H,F,B).setMaterial(M).setEmission(new Color(255, 0, 255)),
+                new Triangle(F,G,D).setMaterial(M).setEmission(new Color(255, 165, 0)),
+                new Triangle(G,I,E).setMaterial(M).setEmission(new Color(128, 0, 128)),
+                new Triangle(A,B,H).setMaterial(M).setEmission(new Color(255, 192, 203)),
+                new Triangle(B,D,F).setMaterial(M).setEmission(new Color(64, 224, 208)),
+                new Triangle(D,E,G).setMaterial(M).setEmission(new Color(255, 215, 0)),
+                new Triangle(E,A,I).setMaterial(M).setEmission(new Color(230, 230, 250)),
+                new Sphere(1,new Point(5,5,0)).setMaterial(M).setEmission(new Color(YELLOW)),
+                new Sphere(1,new Point(-5,-5,5)).setMaterial(M).setEmission(new Color(YELLOW)),
+                new Sphere(1,new Point(7,-5,5)).setMaterial(M).setEmission(new Color(YELLOW)),
+                new Sphere(1,new Point(-5,8,5)).setMaterial(M).setEmission(new Color(YELLOW)),
+                new Plane(I,new Vector(0,0,1)).setMaterial(M.setKr(1)));
+//        cameraBuilder.setCameraLocation(new Point(0, 50, 0)).setVpDistance(500)
+//                .setVpSize(200, 200)
+//                .setImageWriter(new ImageWriter("mixedGeometryTest", 600, 600)).setAntiAliasing(true).setGrid(9)
+//                .build()
+//                .renderImage()
+//                .writeToImage();
+//        cameraBuilder.setCameraLocation(new Point(10, 50, 50)).setVpDistance(500)
+//                .setVpSize(200, 200)
+//                .setImageWriter(new ImageWriter("mixedGeometryTestDifferentAngele1", 600, 600))
+//                .build()
+//                .renderImage()
+//                .writeToImage();
+        cameraBuilder.setCameraLocation(new Point(10, -50, 50)).setVpDistance(500)
+                .setVpSize(200, 200)
+                .setImageWriter(new ImageWriter("mixedGeometryTestDifferentAngele2", 600, 600)).setAntiAliasing(true).setGrid(1)
                 .build()
                 .renderImage()
                 .writeToImage();
-//        cameraBuilder1.setCameraLocation(new Point(0, 10, 10)).setVpDistance(10000)
-//                .setVpSize(2500, 2500)
-//                .setImageWriter(new ImageWriter("customScene2", 500, 500))
+//        cameraBuilder.setCameraLocation(new Point(-10, -50, 50)).setVpDistance(500)
+//                .setVpSize(200, 200)
+//                .setImageWriter(new ImageWriter("mixedGeometryTestDifferentAngele3", 600, 600))
 //                .build()
 //                .renderImage()
 //                .writeToImage();
-//        cameraBuilder1.setCameraLocation(new Point(30, 30, 30)).setVpDistance(10000)
-//                .setVpSize(2500, 2500)
-//                .setImageWriter(new ImageWriter("customScene3", 500, 500))
-//                .build()
-//                .renderImage()
-//                .writeToImage();
-//        cameraBuilder1.setCameraLocation(new Point(0, 30, 0)).setVpDistance(10000)
-//                .setVpSize(2500, 2500)
-//                .setImageWriter(new ImageWriter("customScene4", 500, 500))
+//        cameraBuilder.setCameraLocation(new Point(-10, 50, 50)).setVpDistance(500)
+//                .setVpSize(200, 200)
+//                .setImageWriter(new ImageWriter("mixedGeometryTestDifferentAngele4", 600, 600)).setAntiAliasing(true).setGrid(3)
 //                .build()
 //                .renderImage()
 //                .writeToImage();
     }
+
 }
