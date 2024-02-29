@@ -48,7 +48,7 @@ public class Grid {
                         point=point.add(vRight.scale(xOffset  +xMove));
                     if (!isZero(yOffset) || !isZero(yMove))
                         point=point.add(vUp.scale(yOffset + yMove));
-                        //point.add(vRight.scale(yOffset + yMove));
+
 
                     grid.addLast(point);
                 }

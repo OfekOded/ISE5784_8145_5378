@@ -99,6 +99,8 @@ public class Camera implements Cloneable {
             return this;
         }
 
+
+
         /**
          * Sets the size of the view plane.
          *

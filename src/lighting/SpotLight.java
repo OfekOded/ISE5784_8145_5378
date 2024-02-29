@@ -1,5 +1,6 @@
 package lighting;
 
+import geometries.Plane;
 import primitives.Color;
 import primitives.Point;
 import primitives.Vector;

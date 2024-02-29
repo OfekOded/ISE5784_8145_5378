@@ -222,20 +222,5 @@ public class LightsTests {
                 .renderImage()
                 .writeToImage();
     }
-    @Test
-    public void sphereDirectionalTT() {
-        scene1.geometries.add(sphere);
-        Camera.Builder camera1               = Camera.getBuilder().setAntiAliasing(true)
-                .setRayTracer(new SimpleRayTracer(scene1))
-                .setCameraLocation(new Point(0, 0, 1000))
-                .setDirection(Point.ZERO, new Vector(0,1,0))
-                .setVpSize(200, 200).setVpDistance(1000);
-        scene1.lights.add(new DirectionalLight(sphereLightColor, sphereLightDirection));
 
-        camera1.setImageWriter(new ImageWriter("lightSphereDirectional1234567", 500, 500))
-                .setGrid(9)
-                .build()
-                .renderImage()
-                .writeToImage();
-    }
 }

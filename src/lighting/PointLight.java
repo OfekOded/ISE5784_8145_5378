@@ -1,8 +1,10 @@
 package lighting;
 
+import geometries.Plane;
 import primitives.Color;
 import primitives.Point;
 import primitives.Vector;
+import renderer.Grid;
 
 /**
  * The PointLight class represents a point light source in a 3D scene. Point lights emit light uniformly in all
@@ -10,11 +12,21 @@ import primitives.Vector;
  * LightSource interface to define the behavior of a point light source.
  */
 public class PointLight extends Light implements LightSource {
-    private final Point position;
+    public boolean softShadow =false;
+    public Grid grid;
+    public Point position;
     private double kL = 0;
     private double kC = 1;
     private double kQ = 0;
+    public PointLight setSoftShadow(boolean softShadow) {
+        this.softShadow = softShadow;
+        return this;
+    }
 
+    public PointLight setRootNumberOfRays(int rootNumberOfRays,double radius) {
+        this.grid=new Grid(rootNumberOfRays,radius*2,radius*2);
+        return this;
+    }
     /**
      * Sets the linear attenuation factor for the point light.
      *
@@ -58,6 +70,7 @@ public class PointLight extends Light implements LightSource {
         super(intensity);
         this.position = position;
     }
+
 
     /**
      * Retrieves the color intensity of the point light at a given point in the scene, taking into account attenuation.

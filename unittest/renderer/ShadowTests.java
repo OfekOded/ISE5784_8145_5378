@@ -110,4 +110,90 @@ public class ShadowTests {
                 .writeToImage();
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//    @Test
+//    public void trianglesSphere2() {
+//        scene.geometries.add(
+//                new Triangle(new Point(-150, -150, -115), new Point(150, -150, -135),
+//                        new Point(75, 75, -150)) //
+//                        .setMaterial(new Material().setkS(0.8).setShininess(60)), //
+//                new Triangle(new Point(-150, -150, -115), new Point(-70, 70, -140), new Point(75, 75, -150)) //
+//                        .setMaterial(new Material().setkS(0.8).setShininess(60)), //
+//                new Sphere(30d,new Point(0, 0, -11)) //
+//                        .setEmission(new Color(BLUE)) //
+//                        .setMaterial(new Material().setkD(0.5).setkS(0.5).setShininess(30)) //
+//        );
+//        scene.setAmbientLight(new AmbientLight(new Color(WHITE), 0.15));
+//        scene.lights.add(
+//                new SpotLight(new Color(700, 400, 400), new Point(40, 40, 200), new Vector(0, 0, -11)) //
+//                        .setkL(4E-4).setkQ(2E-5).setSoftShadow(true).setRootNumberOfRays(20,2));
+//
+//        camera.setImageWriter(new ImageWriter("shadowTrianglesSphere2", 1000, 1000)).setAntiAliasing(true).setGrid(9)
+//                .build()
+//                .renderImage()
+//                .writeToImage();
+//    }
+//
+//    Scene scene1=new Scene("Hello");
+//    private final Camera.Builder camera1     = Camera.getBuilder()
+//            .setCameraLocation(new Point(0, 0, 1000)).setVpDistance(1000)
+//            .setDirection(Point.ZERO,new Vector(0,1,0))
+//            .setVpSize(200, 200)
+//            .setRayTracer(new SimpleRayTracer(scene1));
+//
+//    private void sphereTriangleHelperS(String pictName, Triangle triangle, Point spotLocation) {
+//
+//        scene1.geometries.add(sphere, triangle.setEmission(new Color(BLUE)).setMaterial(trMaterial));
+//        scene1.lights.add( //
+//                new SpotLight(new Color(400, 240, 0), spotLocation, new Vector(1, 1, -3)) //
+//                        .setkL(1E-5).setkQ(1.5E-7).setSoftShadow(true).setRootNumberOfRays(9,3));
+//        camera1.setImageWriter(new ImageWriter(pictName, 1000, 1000)).setGrid(9).setAntiAliasing(true)
+//                .build()
+//                .renderImage() //
+//                .writeToImage();
+//    }
+//    /** Sphere-Triangle shading - move triangle up-right */
+//    @Test
+//    public void sphereTriangleMove1S() {
+//        sphereTriangleHelperS("shadowSphereTriangleMove1S", //
+//                new Triangle(new Point(-70, -40,30), new Point(-40, -70, 30), new Point(-68, -68, 29)), //
+//                new Point(-100, -100, 200));
+//    }
+//
+//    /** Sphere-Triangle shading - move triangle upper-righter */
+//    @Test
+//    public void sphereTriangleMove2S() {
+//        sphereTriangleHelperS("shadowSphereTriangleMove2S", //
+//                new Triangle(new Point(-60, -30,30), new Point(-30, -60, 30), new Point(-58, -58, 29)), //
+//                new Point(-100, -100, 200));
+//    }
+
 }
