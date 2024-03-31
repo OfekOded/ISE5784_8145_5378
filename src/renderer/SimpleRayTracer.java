@@ -254,4 +254,6 @@ public class SimpleRayTracer extends RayTracerBase {
         }
         return avrageKtr.scale(1 / (Math.pow(pointLight.grid.rootNumberOfRays, 2)));
     }
+
+
 }

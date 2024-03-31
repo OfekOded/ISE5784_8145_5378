@@ -3,7 +3,9 @@ package renderer;
 import primitives.*;
 import scene.Scene;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.MissingResourceException;
 import java.util.stream.IntStream;
 
@@ -15,8 +17,10 @@ import static primitives.Util.isZero;
  * The camera is responsible for constructing rays for rendering images.
  */
 public class Camera implements Cloneable {
+    int rootNumberOfRays = 1;
     Grid grid;
-    boolean AntiAliasing =false;
+    boolean adaptiveSuperSampling = false;
+    boolean AntiAliasing = false;
     private Point cameraLocation;
     private Vector Vup;
     private Vector Vto;
@@ -26,7 +30,7 @@ public class Camera implements Cloneable {
     private double VpDistance = 0;
     private ImageWriter imageWriter;
     private RayTracerBase rayTracer;
-
+    //  private PixelManager PixelManager = new PixelManager();
 
 
     /**
@@ -35,10 +39,22 @@ public class Camera implements Cloneable {
     public static class Builder {
         final private Camera camera = new Camera();
         private Point Pto = null;
+
         public Builder setAntiAliasing(boolean antiAliasing) {
             camera.AntiAliasing = antiAliasing;
             return this;
         }
+
+        public Builder adaptiveSuperSampling(boolean adaptiveSuperSampling) {
+            camera.adaptiveSuperSampling = adaptiveSuperSampling;
+            return this;
+        }
+
+        public Builder rootNumberOfRays(int rootNumberOfRays) {
+            camera.rootNumberOfRays = rootNumberOfRays;
+            return this;
+        }
+
         /**
          * Sets the location of the camera.
          *
@@ -47,7 +63,7 @@ public class Camera implements Cloneable {
          */
         public Builder setCameraLocation(Point cameraLocation) {
             this.camera.cameraLocation = cameraLocation;
-            if(Pto!=null)
+            if (Pto != null)
                 camera.Vto = Pto.subtract(camera.cameraLocation).normalize();
             return this;
         }
@@ -71,6 +87,7 @@ public class Camera implements Cloneable {
 
         /**
          * Set the direction of the camera
+         *
          * @param Pto point to
          * @param vup vector up
          * @return this object according to the builder design pattern
@@ -78,13 +95,14 @@ public class Camera implements Cloneable {
         public Builder setDirection(Point Pto, Vector vup) {
             camera.Vup = vup;
             this.Pto = Pto;
-            if(camera.cameraLocation!=null)
+            if (camera.cameraLocation != null)
                 camera.Vto = Pto.subtract(camera.cameraLocation).normalize();
             return this;
         }
 
         /**
          * Set the ImageWriter of the object camera
+         *
          * @param ImageWriter
          * @return this object according to the builder design pattern
          */
@@ -95,6 +113,7 @@ public class Camera implements Cloneable {
 
         /**
          * Set the RayTracerBase of the object camera
+         *
          * @param RayTracerBase
          * @return this object according to the builder design pattern
          */
@@ -102,7 +121,6 @@ public class Camera implements Cloneable {
             camera.rayTracer = RayTracerBase;
             return this;
         }
-
 
 
         /**
@@ -141,7 +159,8 @@ public class Camera implements Cloneable {
         }
 
         public Builder setGrid(int rootNumberOfRays) {
-            camera.grid = new Grid(rootNumberOfRays, camera.width/camera.imageWriter.getNx(), camera.height/camera.imageWriter.getNy());
+            this.camera.rootNumberOfRays = rootNumberOfRays;
+            camera.grid = new Grid(rootNumberOfRays, camera.width / camera.imageWriter.getNx(), camera.height / camera.imageWriter.getNy());
             return this;
         }
 
@@ -175,9 +194,9 @@ public class Camera implements Cloneable {
             if (Pto != null) {
                 if (Pto.equals(camera.cameraLocation))
                     throw new IllegalArgumentException("must be different");
-            if(Pto.subtract(camera.cameraLocation).normalize().equals(this.camera.Vup))
+                if (Pto.subtract(camera.cameraLocation).normalize().equals(this.camera.Vup))
                     throw new IllegalArgumentException("must be different");
-            this.camera.Vright = camera.Vup.crossProduct(Pto.subtract(camera.cameraLocation)).normalize();
+                this.camera.Vright = camera.Vup.crossProduct(Pto.subtract(camera.cameraLocation)).normalize();
             } else
                 this.camera.Vright = camera.Vup.crossProduct(camera.Vto).normalize();
             try {
@@ -279,7 +298,7 @@ public class Camera implements Cloneable {
         return new Ray(cameraLocation, centerPoint.subtract(cameraLocation));
     }
 
-    private Point getCenterPoint(int nX, int nY, int j, int i) {
+    private Point getCenterPoint(int nX, int nY, double j, double i) {
         Point imageCenter = cameraLocation.add(Vto.scale(VpDistance));
 
         // Pixel aspect ratio
@@ -304,19 +323,6 @@ public class Camera implements Cloneable {
         return centerPoint;
     }
 
-    /**
-     * Renders the image by casting rays for each pixel and tracing them through the scene.
-     *
-     * @return This Camera instance after rendering the image.
-     */
-    public Camera renderImage() {
-        for (int i = 0; i < imageWriter.getNx(); i++) {
-            for (int j = 0; j < imageWriter.getNy(); j++) {
-                this.castRay(imageWriter.getNx(), imageWriter.getNy(), i, j);
-            }
-        }
-        return this;
-    }
 
     /**
      * Prints a grid on the image to visualize pixel alignment.
@@ -351,52 +357,41 @@ public class Camera implements Cloneable {
      * @param j  The pixel's Y coordinate.
      */
     private void castRay(int Nx, int Ny, int i, int j) {
-        Color averageOfColors=Color.BLACK;
-        if(!AntiAliasing)
+        Color averageOfColors = Color.BLACK;
+        if (!AntiAliasing && !adaptiveSuperSampling)
             imageWriter.writePixel(i, j, rayTracer.traceRay(constructRay(Nx, Ny, i, j)));
-        else{
-            grid.rayBeam(getCenterPoint(Nx,Ny,i,j),Vup,Vto);
-            for(Point point: grid.grid) {
-                averageOfColors=averageOfColors.add(rayTracer.traceRay( new Ray(cameraLocation, point.subtract(cameraLocation))));
+        else if (AntiAliasing && adaptiveSuperSampling) {
+            ArrayList<ColorPoint> colorPoints = new ArrayList<>();
+            List<Point> squareGrid = generateSquareGridPoints(rootNumberOfRays, width / Nx, getCenterPoint(Nx, Ny, i,j));
+            for (int k = 0; k < rootNumberOfRays * rootNumberOfRays; k++) {
+                colorPoints.add(new ColorPoint(squareGrid.get(k), null));
             }
-            imageWriter.writePixel(i,j,averageOfColors.scale((double) 1 / (grid.rootNumberOfRays * grid.rootNumberOfRays)));
+            imageWriter.writePixel(i, j, adaptiveSuperSampling(colorPoints, rootNumberOfRays, 0, 0));
+        } else if (!adaptiveSuperSampling) {
+            grid.rayBeam(getCenterPoint(Nx, Ny, i, j), Vup, Vto);
+            for (Point point : grid.grid) {
+                averageOfColors = averageOfColors.add(rayTracer.traceRay(new Ray(cameraLocation, point.subtract(cameraLocation))));
+            }
+            imageWriter.writePixel(i, j, averageOfColors.scale((double) 1 / (grid.rootNumberOfRays * grid.rootNumberOfRays)));
         }
+        Pixel.pixelDone();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     private int threadsCount = 0;
     final int SPARE_THREADS = 2;
     double printInterval = 0;
 
 
-
-
     public Camera setMultithreading(int threads) {
-        if (threads < -2) throw new IllegalArgumentException("Multithreading must be -2 or higher");if (threads >= -1) threadsCount = threads;
+        if (threads < -2) throw new IllegalArgumentException("Multithreading must be -2 or higher");
+        if (threads >= -1) threadsCount = threads;
         else { // == -2
             int cores = Runtime.getRuntime().availableProcessors() - SPARE_THREADS;
             threadsCount = cores <= 2 ? 1 : cores;
         }
         return this;
     }
+
     public Camera setDebugPrint(double interval) {
         printInterval = interval;
         return this;
@@ -416,6 +411,7 @@ public class Camera implements Cloneable {
         private static final String PRINT_FORMAT = "%5.1f%%\r";
         private static Object mutexNext = new Object();
         private static Object mutexPixels = new Object();
+
         static void initialize(int maxRows, int maxCols, double interval) {
             Pixel.maxRows = maxRows;
             Pixel.maxCols = maxCols;
@@ -423,8 +419,6 @@ public class Camera implements Cloneable {
             printInterval = (int) (interval * 10);
             if (print = printInterval != 0) System.out.printf(PRINT_FORMAT, 0d);
         }
-
-
 
 
         static Pixel nextPixel() {
@@ -438,6 +432,7 @@ public class Camera implements Cloneable {
             }
             return null;
         }
+
         static void pixelDone() {
             boolean flag = false;
             int percentage = 0;
@@ -455,38 +450,94 @@ public class Camera implements Cloneable {
         }
     }
 
-
-
-
-
-
-
-    private void castRayM(int nX, int nY, int col, int row) {
-        imageWriter.writePixel(col, row, rayTracer.traceRay(constructRay(nX, nY, col, row))); Pixel.pixelDone();
-    }
-    public Camera renderImageM() {
+    public Camera renderImage() {
         final int nX = imageWriter.getNx();
         final int nY = imageWriter.getNy();
         Pixel.initialize(nY, nX, printInterval);
         if (threadsCount == 0)
             for (int i = 0; i < nY; ++i)
                 for (int j = 0; j < nX; ++j)
-                    castRayM(nX, nY, j, i);
+                    castRay(nX, nY, j, i);
         else if (threadsCount == -1) {
             IntStream.range(0, nY).parallel() //
                     .forEach(i -> IntStream.range(0, nX).parallel() //
-                            .forEach(j -> castRayM(nX, nY, j, i)));}
-        else {
-                var threads = new LinkedList<Thread>();
-                while (threadsCount-- > 0)
-                    threads.add(new Thread(() -> {
-                        Pixel pixel;
-                        while ((pixel = Pixel.nextPixel()) != null)
-                            castRayM(nX, nY, pixel.col(), pixel.row());
-                    }));
-                for (var thread : threads) thread.start();
-                try { for (var thread : threads) thread.join(); } catch (InterruptedException ignore) {}}
-            return this;
+                            .forEach(j -> castRay(nX, nY, j, i)));
+        } else {
+            var threads = new LinkedList<Thread>();
+            while (threadsCount-- > 0)
+                threads.add(new Thread(() -> {
+                    Pixel pixel;
+                    while ((pixel = Pixel.nextPixel()) != null)
+                        castRay(nX, nY, pixel.col(), pixel.row());
+                }));
+            for (var thread : threads) thread.start();
+            try {
+                for (var thread : threads) thread.join();
+            } catch (InterruptedException ignore) {
+            }
         }
+        return this;
+    }
+
+    public Color adaptiveSuperSampling(ArrayList<ColorPoint> calculatedPoints, int gridSideLength, int gridRow, int gridColumn) {
+        List<Integer> cornerIndices = corners(gridSideLength, gridRow, gridColumn);
+        boolean isUniformColor = true;
+        for (int index = 0; index < cornerIndices.size(); index++) {
+            if (calculatedPoints.get(cornerIndices.get(index)).color == null)
+                calculatedPoints.set(cornerIndices.get(index), new ColorPoint(calculatedPoints.get(cornerIndices.get(index)).point, rayTracer.traceRay(new Ray(cameraLocation, calculatedPoints.get(cornerIndices.get(index)).point.subtract(cameraLocation)))));
+            if (index != 0)
+                if (!calculatedPoints.get(cornerIndices.get(index)).color.equals(calculatedPoints.get(cornerIndices.get(index - 1)).color)) {
+                    isUniformColor = false;
+                }
+        }
+        if (isUniformColor)
+            return calculatedPoints.get(cornerIndices.get(0)).color;
+        Color combinedColor = Color.BLACK;
+        if (gridSideLength > 2)
+            combinedColor = combinedColor.add(adaptiveSuperSampling(calculatedPoints, (gridSideLength+1)/ 2 , gridRow, gridColumn))
+                    .add(adaptiveSuperSampling(calculatedPoints, (gridSideLength+1) /2 , gridRow + gridSideLength / 2, gridColumn))
+                    .add(adaptiveSuperSampling(calculatedPoints, (gridSideLength+1) / 2 , gridRow, gridColumn + gridSideLength / 2))
+                    .add(adaptiveSuperSampling(calculatedPoints, (gridSideLength+1) / 2, gridRow + gridSideLength / 2, gridColumn + gridSideLength / 2));
+        else
+            for (int i = 0; i < 4; i++)
+                combinedColor = combinedColor.add(calculatedPoints.get(cornerIndices.get(i)).color);
+        return combinedColor.reduce(4);
+    }
+
+    public List<Integer> corners(int gridSide, int initialRow, int initialColumn) {
+        return List.of(
+                initialRow + initialColumn * rootNumberOfRays,
+                initialRow + gridSide - 1 + initialColumn * rootNumberOfRays,
+                initialRow + (initialColumn + gridSide - 1) * rootNumberOfRays,
+                initialRow + gridSide - 1 + (initialColumn + gridSide - 1) * rootNumberOfRays
+        );
+    }
+
+
+    public List<Point> generateSquareGridPoints(int sampleCount, double gridSideLength, Point gridCenter) {
+        double pixelStep = gridSideLength / sampleCount;
+        double yPos, xPos;
+        Point gridPoint;
+        List<Point> pointsList = new ArrayList<>();
+        for (int i = 0; i < sampleCount; i++) {
+            for (int j = 0; j < sampleCount; j++) {
+                yPos = (-(i - (sampleCount - 1.0) / 2.0) * pixelStep);
+                xPos = ((j - (sampleCount - 1.0) / 2.0) * pixelStep);
+                // gridPoint - center point in the sub-pixel i,j
+                if (!Util.isZero(xPos) && !Util.isZero(yPos))
+                    gridPoint = gridCenter.add(Vright.scale(xPos).add(Vup.scale(yPos)));
+                else if (!Util.isZero(xPos))
+                    gridPoint = gridCenter.add(Vright.scale(xPos));
+                else if (!Util.isZero(yPos))
+                    gridPoint = gridCenter.add(Vup.scale(yPos));
+                else
+                    gridPoint = gridCenter;
+
+                pointsList.add(gridPoint);
+            }
+        }
+        return pointsList;
+    }
 }
-}
+
+

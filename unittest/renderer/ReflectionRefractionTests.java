@@ -53,8 +53,12 @@ public class ReflectionRefractionTests {
         cameraBuilder.setCameraLocation(new Point(0, 0, 1000)).setVpDistance(1000)
                 .setVpSize(150, 150)
                 .setImageWriter(new ImageWriter("refractionTwoSpheres", 500, 500))
+                .setAntiAliasing(true)
+                .adaptiveSuperSampling(true)
+                .rootNumberOfRays(13)
                 .build()
                 .renderImage()
+                .setMultithreading(6)
                 .writeToImage();
     }
 
@@ -85,7 +89,7 @@ public class ReflectionRefractionTests {
                 .setVpSize(2500, 2500)
                 .setImageWriter(new ImageWriter("reflectionTwoSpheresMirrored", 500, 500))
                 .build()
-                .renderImage()
+                .renderImage().setMultithreading(5)
                 .writeToImage();
     }
 
@@ -107,13 +111,17 @@ public class ReflectionRefractionTests {
         scene.setAmbientLight(new AmbientLight(new Color(WHITE), 0.15));
         scene.lights.add(
                 new SpotLight(new Color(700, 400, 400), new Point(60, 50, 0), new Vector(0, 0, -1))
-                        .setkL(4E-5).setkQ(2E-7));
+                        .setkL(4E-5).setkQ(2E-7).setSoftShadow(true).setRootNumberOfRays(9,3));
 
         cameraBuilder.setCameraLocation(new Point(0, 0, 1000)).setVpDistance(1000)
                 .setVpSize(200, 200)
-                .setImageWriter(new ImageWriter("refractionShadow", 600, 600))
+                .setImageWriter(new ImageWriter("refractionShadow", 1000, 1000))
+                .setAntiAliasing(true)
+                .adaptiveSuperSampling(true)
+                .rootNumberOfRays(13)
                 .build()
                 .renderImage()
+                .setMultithreading(5)
                 .writeToImage();
     }
     @Test
@@ -159,34 +167,53 @@ public class ReflectionRefractionTests {
                 new Plane(I,new Vector(0,0,1)).setMaterial(M.setKr(1)));
         cameraBuilder.setCameraLocation(new Point(0, 50, 0)).setVpDistance(500)
                 .setVpSize(200, 200)
-                .setImageWriter(new ImageWriter("mixedGeometryTest", 600, 600)).setAntiAliasing(true).setGrid(9)
+                .setImageWriter(new ImageWriter("mixedGeometryTest", 2000, 2000))
+                .setAntiAliasing(true)
+                .adaptiveSuperSampling(true)
+                .rootNumberOfRays(13)
                 .build()
                 .renderImage()
+                .setMultithreading(6)
                 .writeToImage();
         cameraBuilder.setCameraLocation(new Point(10, 50, 50)).setVpDistance(500)
                 .setVpSize(200, 200)
-                .setImageWriter(new ImageWriter("mixedGeometryTestDifferentAngele1", 600, 600))
+                .setImageWriter(new ImageWriter("mixedGeometryTestDifferentAngele1", 2000, 2000))
+                .setAntiAliasing(true)
+                .adaptiveSuperSampling(true)
+                .rootNumberOfRays(13)
                 .build()
                 .renderImage()
+                .setMultithreading(6)
                 .writeToImage();
         cameraBuilder.setCameraLocation(new Point(10, -50, 50)).setVpDistance(500)
                 .setVpSize(200, 200)
-                .setImageWriter(new ImageWriter("mixedGeometryTestDifferentAngele2", 600, 600)).setAntiAliasing(true).setGrid(1)
+                .setImageWriter(new ImageWriter("mixedGeometryTestDifferentAngele2", 2000, 2000))
+                .setAntiAliasing(true)
+                .adaptiveSuperSampling(true)
+                .rootNumberOfRays(13)
                 .build()
                 .renderImage()
+                .setMultithreading(6)
                 .writeToImage();
         cameraBuilder.setCameraLocation(new Point(-10, -50, 50)).setVpDistance(500)
                 .setVpSize(200, 200)
-                .setImageWriter(new ImageWriter("mixedGeometryTestDifferentAngele3", 600, 600))
+                .setImageWriter(new ImageWriter("mixedGeometryTestDifferentAngele3", 2000, 2000))
+                .setAntiAliasing(true)
+                .adaptiveSuperSampling(true)
+                .rootNumberOfRays(13)
                 .build()
                 .renderImage()
+                .setMultithreading(6)
                 .writeToImage();
         cameraBuilder.setCameraLocation(new Point(-10, 50, 50)).setVpDistance(500)
                 .setVpSize(200, 200)
-                .setImageWriter(new ImageWriter("mixedGeometryTestDifferentAngele4", 600, 600)).setAntiAliasing(true).setGrid(3)
+                .setImageWriter(new ImageWriter("mixedGeometryTestDifferentAngele4", 2000, 2000))
+                .setAntiAliasing(true)
+                .adaptiveSuperSampling(true)
+                .rootNumberOfRays(13)
                 .build()
                 .renderImage()
+                .setMultithreading(6)
                 .writeToImage();
     }
-
 }
